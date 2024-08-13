@@ -114,20 +114,23 @@ const App = ({route}) => {
         style={{
           padding: 10,
           position: 'absolute',
-          left: 10,
+          left: 0,
           top: 10,
           zIndex: 5,
         }}
         onPress={() => navigation.goBack()}>
         <Arrow />
       </TouchableOpacity>
-      <ScrollView contentContainerStyle={{paddingBottom: 30}}>
+      <ScrollView
+        scrollEnabled={false}
+        contentContainerStyle={{paddingBottom: 30}}>
         <View
           style={{
             flexDirection: 'row',
             justifyContent: 'space-between',
-            width: '80%',
+            width: '95%',
             alignSelf: 'center',
+            marginTop: -2,
           }}>
           <View>
             <Image
@@ -197,12 +200,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 0,
-    marginTop: '14%',
+    marginTop: '5%',
   },
   icon: {
-    height: 50,
-    width: 50,
-    marginTop: 10,
+    height: 95,
+    width: 95,
+    // marginTop: 10,
     alignSelf: 'center',
   },
   titleText: {
@@ -212,8 +215,8 @@ const styles = StyleSheet.create({
     fontSize: 10,
   },
   imageContainer: {
-    marginTop: -35,
-    height: '85%',
+    marginTop: -30,
+    height: '80%',
     width: '100%',
     alignSelf: 'center',
     borderRadius: 20,
@@ -227,8 +230,8 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   image: {
-    width: 100,
-    height: 100,
+    width: 90,
+    height: 90,
     borderRadius: 60,
     alignSelf: 'center',
     // marginBottom: 20,
@@ -238,8 +241,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: 'center',
     color: 'black',
-    marginBottom: 10,
+    marginBottom: 5,
     fontFamily: 'Montserrat-Bold',
+    marginTop: 5,
   },
   subtitle: {
     fontSize: 16,
@@ -250,7 +254,7 @@ const styles = StyleSheet.create({
   },
   foodsTitle: {
     alignSelf: 'flex-start',
-    marginTop: 5,
+    marginTop: 0,
     marginLeft: 10,
   },
   header: {
