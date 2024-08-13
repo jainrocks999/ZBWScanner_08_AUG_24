@@ -1,5 +1,5 @@
-import {useNavigation} from '@react-navigation/native';
-import React, {useState, useRef} from 'react';
+import { useNavigation } from '@react-navigation/native';
+import React, { useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -11,51 +11,55 @@ import {
   ToastAndroid,
 } from 'react-native';
 import QRCodeScanner from 'react-native-qrcode-scanner';
-import {RNCamera} from 'react-native-camera';
+import { RNCamera } from 'react-native-camera';
 import Arrow from '../src/assets/HeaderArrow.svg';
 import axios from 'axios';
 import Loading from './components/Loader';
-
-const QRCodeScannerScreen = ({route}) => {
+import Toast from 'react-native-simple-toast'
+const QRCodeScannerScreen = ({ route }) => {
   const [loading, setLoading] = useState(false);
   const data = route.params.data;
   const [isScannerActive, setScannerActive] = useState(true);
   const [flash, setFlash] = useState(false);
   const scannerRef = useRef(null);
   const navigation = useNavigation();
-  const onRead = e => {
-    if (data) {
-      console.log('Scanned Data:', e.data);
-      navigation.replace('Details', {scannedData: e.data});
-      setScannerActive(false);
-    } else {
-      if (e.data.includes('chouvihar')) {
-        setLoading(true);
-        let config = {
-          method: 'get',
-          maxBodyLength: Infinity,
-          url: e.data,
-          headers: {},
-        };
-
-        axios(config)
-          .then(response => {
-            console.log(JSON.stringify(response.data));
-            if (response.status == 200)
-              navigation.replace('Chauvihar', {data: response?.data?.data});
-            else {
-              ToastAndroid.show(response.data.message, ToastAndroid.SHORT);
-            }
-            setLoading(false);
-          })
-          .catch(error => {
-            console.log(error);
-            setLoading(false);
-            ToastAndroid.show(response.data.message, ToastAndroid.SHORT);
-          });
+  const onRead = async e => {
+    try {
+      if (data) {
+        console.log('Scanned Data:', e.data);
+        navigation.replace('Details', { scannedData: e.data });
+        setScannerActive(false);
       } else {
-        ToastAndroid.show('Wrong QR Code', ToastAndroid.SHORT);
+        if (e.data.includes('chouvihar')) {
+
+
+          console.log('virenDRA ,,,,,,,', e.data);
+          setLoading(true);
+          let response =await axios ({
+            method: 'get',
+            maxBodyLength: Infinity,
+            url: e.data,
+            headers: {},
+          })
+
+         
+
+          if (response.data.code == 200)
+            navigation.replace('Chauvihar', { data: response?.data?.data });
+          else {
+            Toast.show(response.data.message);
+          }
+          setLoading(false);
+
+        } else {
+          setLoading(false);
+          Toast.show('Wrong QR Code');
+
+        }
       }
+    } catch (errr) {
+      setLoading(false);
+      console.log('th9s issisissiis', errr);
     }
   };
   const handleScanButtonPress = () => {
@@ -79,10 +83,10 @@ const QRCodeScannerScreen = ({route}) => {
           {/* <Image style={{width:24,height:18,tintColor:'#fff'}} source={require('../src/assets/arrow1.png')}/> */}
         </TouchableOpacity>
         <TouchableOpacity
-          style={{marginRight: 40}}
+          style={{ marginRight: 40 }}
           onPress={() => setFlash(!flash)}>
           <Image
-            style={{width: 20, height: 20, tintColor: '#fff'}}
+            style={{ width: 20, height: 20, tintColor: '#fff' }}
             source={require('../src/assets/torch1.png')}
           />
         </TouchableOpacity>
@@ -115,17 +119,17 @@ const QRCodeScannerScreen = ({route}) => {
           <Button title="Scan Again" onPress={handleScanButtonPress} />
         </View>
       )}
-      <View
-        style={{
+      <TouchableOpacity onPress={()=>console.log('raju')}
+        style={{opacity:0.5,
           flexDirection: 'row',
           justifyContent: 'space-between',
           width: '100%',
           marginLeft: 40,
           alignItems: 'center',
-          marginBottom: 50,
+          marginBottom: 50,position:'absolute',top:'63%',left:'30%'
         }}>
-        <Text style={{color: '#fff'}}></Text>
-      </View>
+        <Text style={{ color: '#fff' }}> </Text>
+      </TouchableOpacity>
       <StatusBar backgroundColor={'#000'} />
     </View>
   );

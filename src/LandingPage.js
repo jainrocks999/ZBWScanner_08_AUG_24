@@ -10,8 +10,47 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Storage from '../src/components/LocalStorage';
+import requestCameraPermission from '../src/Permission'
+import axios from 'axios';
 const LandingPage = () => {
   const navigation = useNavigation();
+ 
+  
+  const handleScan = async (data) => {
+    const hasPermission = await requestCameraPermission();
+    console.log('Opening QR scanner...',hasPermission);
+    if (hasPermission) {
+      // Open the scanner here
+      navigation.navigate('QRCodeScanner', {data: data})
+      console.log('Opening QR scanner...',hasPermission);
+      // Your code to open the scanner goes here
+    } else {
+    // Alert.alert('Permission Denied', 'Camera access is required to scan QR codes.');
+    }
+  };
+
+
+ 
+
+const App1 =async()=>{
+
+
+let res = await axios({
+  method: 'get',
+ 
+  url: 'http://45.79.123.102:49002/api/chouviharevent/scan/chouvihar/event/65f06399e2201e2308a1c92a/66b079c22f477781f7092eaa/1',
+  headers: { 
+    'Cookie': 'serv_app_zaveri=s%3AKKNe8SpAQcT8e7VgK9ndvWFBr_iovTaZ.NMBRNybn1JeuyY2jtrZB%2By2A0%2BctimOGHdZgbbBRGhc'
+  }
+})
+
+
+
+  console.log('wgwsfsdfsd',JSON.stringify(res.data));
+
+}
+
+
   return (
     <ImageBackground
       style={{flex: 1}}
@@ -28,7 +67,10 @@ const LandingPage = () => {
         }}></View>
       <View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
         <TouchableOpacity
-          onPress={() => navigation.navigate('QRCodeScanner', {data: true})}
+          onPress={() =>
+              handleScan(true)
+              // navigation.navigate('QRCodeScanner', {data: true})
+          }
           style={{
             backgroundColor: '#FCDA64',
 
@@ -73,7 +115,7 @@ const LandingPage = () => {
           </Text>
         </TouchableOpacity> */}
         <TouchableOpacity
-          onPress={() => navigation.navigate('QRCodeScanner', {data: false})}
+          onPress={() =>handleScan(false)}
           style={{
             backgroundColor: '#FCDA64',
 

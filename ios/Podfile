@@ -5,6 +5,9 @@ require Pod::Executable.execute_command('node', ['-p',
     {paths: [process.argv[1]]},
   )', __dir__]).strip
 
+
+
+
 platform :ios, min_ios_version_supported
 prepare_react_native_project!
 
@@ -44,6 +47,36 @@ target 'ZBWAScanner' do
     # An absolute path to your application root.
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
+
+
+
+  def node_require(script)
+    # Resolve script with node to allow for hoisting
+    require Pod::Executable.execute_command('node', ['-p',
+      "require.resolve(
+        '#{script}',
+        {paths: [process.argv[1]]},
+      )", __dir__]).strip
+  end
+ 
+  node_require('react-native/scripts/react_native_pods.rb')
+  node_require('react-native-permissions/scripts/setup.rb')
+  require_relative ('../node_modules/react-native-permissions/scripts/setup')
+
+  # …
+
+ # platform :ios, min_ios_version_supported
+ # prepare_react_native_project!
+
+ # ⬇️ uncomment wanted permissions
+ setup_permissions([
+   'Camera',
+   'Notifications',
+   'PhotoLibrary',
+   'PhotoLibraryAddOnly',
+ ])
+
+# …
 
   target 'ZBWAScannerTests' do
     inherit! :complete
