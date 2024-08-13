@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import Arrow from '../src/assets/HeaderArrow.svg';
 import {useNavigation} from '@react-navigation/native';
+
 const data = {
   userName: 'Raju',
   eventName: 'Test Event',
@@ -33,49 +34,31 @@ const data = {
 const getOptionLabel = option => {
   switch (option) {
     case '1':
-      return 'Ekasna';
+      return 'Ekasana';
     case '2':
-      return 'Biyasna';
+      return 'Biyasana';
     case '3':
       return 'Chauvihar';
     default:
       return '-';
   }
 };
+
 const renderRow = ({item, index}) => (
   <View
     style={[
       styles.row,
-      {borderBottomWidth: index == data.foods.length - 1 ? 0.5 : 0},
+      {borderBottomWidth: index === data.foods.length - 1 ? 0.5 : 0},
     ]}>
     <View style={styles.cell}>
-      <Text
-        style={{
-          color: '#000000',
-          fontFamily: 'Montserrat-SemiBold',
-          fontSize: 14,
-        }}>
-        {item.e_date}
-      </Text>
+      <Text style={styles.cellText}>{item.e_date}</Text>
     </View>
     <View style={styles.cell}>
-      <Text
-        style={{
-          color: '#000000',
-          fontFamily: 'Montserrat-medium',
-          fontSize: 14,
-        }}>
-        {getOptionLabel(item.selectedOption)}
-      </Text>
+      <Text style={styles.cellText}>{getOptionLabel(item.selectedOption)}</Text>
     </View>
     <View style={styles.cell}>
-      <Text
-        style={{
-          color: '#000000',
-          fontFamily: 'Montserrat-medium',
-          fontSize: 14,
-        }}>
-        {item?.selectedTime == '' ? '-' : item?.selectedTime}
+      <Text style={styles.cellText}>
+        {item?.selectedTime === '' ? '-' : item?.selectedTime}
       </Text>
     </View>
   </View>
@@ -87,7 +70,7 @@ const renderHeader = () => (
       <Text style={styles.headerText}>Date</Text>
     </View>
     <View style={styles.headerCell}>
-      <Text style={styles.headerText}> {''}</Text>
+      <Text style={styles.headerText}> </Text>
     </View>
     <View style={styles.headerCell}>
       <Text style={styles.headerText}>Slots</Text>
@@ -99,7 +82,7 @@ const App = ({route}) => {
   const navigation = useNavigation();
   const [, setData] = useState([]);
   const {data} = route?.params;
-  //   console.log('this sis urlk', url);
+
   useEffect(() => {
     getEvent();
   }, []);
@@ -122,26 +105,58 @@ const App = ({route}) => {
         console.log(error);
       });
   };
+
   return (
     <ImageBackground
       style={{flex: 1}}
       source={require('./assets/background.png')}>
-      <View
+      <TouchableOpacity
         style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          width: '100%',
-          marginTop: 10,
-          marginLeft: 20,
+          padding: 10,
+          position: 'absolute',
+          left: 10,
           top: 10,
-        }}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Arrow />
-          {/* <Image style={{width:24,height:18,tintColor:'#fff'}} source={require('../src/assets/arrow1.png')}/> */}
-        </TouchableOpacity>
-      </View>
-      <View style={styles.container}>
-        <ScrollView contentContainerStyle={{paddingTop: 20}}>
+          zIndex: 5,
+        }}
+        onPress={() => navigation.goBack()}>
+        <Arrow />
+      </TouchableOpacity>
+      <ScrollView contentContainerStyle={{paddingBottom: 30}}>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            width: '80%',
+            alignSelf: 'center',
+          }}>
+          <View>
+            <Image
+              resizeMode="contain"
+              style={styles.icon}
+              source={require('./assets/jinendra/jainism2.png')}
+            />
+
+            {/* <Text style={styles.titleText}>जय जिनेन्द्र</Text> */}
+          </View>
+
+          <View>
+            <Image
+              resizeMode="contain"
+              style={styles.icon}
+              source={require('./assets/jinendra/jainism2.png')}
+            />
+            {/* <Text style={styles.titleText}>जय जिनेन्द्र</Text> */}
+          </View>
+        </View>
+        <View style={styles.imageContainer}>
+          <Image
+            style={styles.mainImage}
+            resizeMode="contain"
+            source={require('./assets/jinendra/Images.png')}
+          />
+        </View>
+
+        <View style={styles.container}>
           <Image
             resizeMethod="cover"
             source={{uri: data?.selfie}}
@@ -151,48 +166,76 @@ const App = ({route}) => {
           <Text style={styles.subtitle}>User: {data?.userName}</Text>
           <Text style={styles.subtitle}>
             Membership ID:{' '}
-            {data.membershipId == '' ? 'Not a Member' : data.membershipId}
+            {data.membershipId === '' ? 'Not a Member' : data.membershipId}
           </Text>
           <Text style={styles.subtitle}>Phone: {data?.phone}</Text>
-          <Text
-            style={[
-              styles.subtitle,
-              {alignSelf: 'flex-start', marginTop: 15, marginLeft: 10},
-            ]}>
-            Foods:
-          </Text>
+          <Text style={[styles.subtitle, styles.foodsTitle]}>Foods:</Text>
           <View>
             {renderHeader()}
             <FlatList
               data={data.foods}
+              scrollEnabled={false}
               keyExtractor={(item, index) => index.toString()}
               renderItem={renderRow}
             />
           </View>
-          {/* <TouchableOpacity onPress={{}} style={styles.touch1}>
-            <Text style={styles.text}>Action</Text>
-          </TouchableOpacity> */}
-        </ScrollView>
-      </View>
+        </View>
+      </ScrollView>
     </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
+  headerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '50%',
+    marginTop: 10,
+    marginLeft: 20,
+    top: 10,
+  },
   container: {
     flex: 1,
     padding: 0,
+    marginTop: '14%',
+  },
+  icon: {
+    height: 50,
+    width: 50,
+    marginTop: 10,
+    alignSelf: 'center',
+  },
+  titleText: {
+    alignSelf: 'center',
+    fontFamily: 'Montserrat-Bold',
+    color: 'black',
+    fontSize: 10,
+  },
+  imageContainer: {
+    marginTop: -35,
+    height: '85%',
+    width: '100%',
+    alignSelf: 'center',
+    borderRadius: 20,
+    overflow: 'hidden',
+    position: 'absolute',
+  },
+  mainImage: {
+    alignSelf: 'center',
+    height: '20%',
+    width: '100%',
+    marginTop: 30,
   },
   image: {
-    width: 120,
-    height: 120,
+    width: 100,
+    height: 100,
     borderRadius: 60,
     alignSelf: 'center',
-    marginBottom: 20,
+    // marginBottom: 20,
+    marginTop: 20,
   },
   title: {
     fontSize: 18,
-    // fontWeight: 'bold',
     textAlign: 'center',
     color: 'black',
     marginBottom: 10,
@@ -204,6 +247,11 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     fontFamily: 'Montserrat-medium',
     color: 'black',
+  },
+  foodsTitle: {
+    alignSelf: 'flex-start',
+    marginTop: 5,
+    marginLeft: 10,
   },
   header: {
     flexDirection: 'row',
@@ -223,11 +271,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: 'black',
   },
-  table: {
-    borderWidth: 0.5,
-    borderColor: '#000',
-    margin: 10,
-  },
   row: {
     flexDirection: 'row',
   },
@@ -238,6 +281,11 @@ const styles = StyleSheet.create({
     padding: 10,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  cellText: {
+    color: '#000000',
+    fontFamily: 'Montserrat-SemiBold',
+    fontSize: 14,
   },
   touch1: {
     height: 43,
