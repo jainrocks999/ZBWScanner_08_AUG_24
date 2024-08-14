@@ -48,7 +48,7 @@ const Splash = () => {
         justifyContent: 'center',
       }}>
       <Image
-        style={{width: '99%', height: 256}}
+        style={{width:'100%', height: '50%'}}
         source={require('../src/assets/ZBW_black_logo-transformed.png')}
       />
       <StatusBar backgroundColor={'#000'} />
