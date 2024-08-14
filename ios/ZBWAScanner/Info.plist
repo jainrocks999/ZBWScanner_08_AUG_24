@@ -38,7 +38,7 @@
 		</dict>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-<string>This app needs access to your camera to scan QR codes during the event. Please allow camera access to continue.</string>
+	<string>This app needs access to your camera to scan QR codes during the event. Please allow camera access to continue.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>We need access to your location to provide relevant services</string>
 	<key>NSPhotoLibraryUsageDescription</key>
@@ -58,11 +58,11 @@
 	<array>
 		<string>armv7</string>
 	</array>
+	<key>UIRequiresFullScreen</key>
+	<true/>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>

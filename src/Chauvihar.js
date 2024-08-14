@@ -13,6 +13,7 @@ import {
 import Arrow from '../src/assets/HeaderArrow.svg';
 import {useNavigation} from '@react-navigation/native';
 import {heightPercent, widthPrecent} from './components/responsive';
+import isIos from './components/isIos';
 const data = {
   userName: 'Raju',
   eventName: 'Test Event',
@@ -66,13 +67,13 @@ const renderRow = ({item, index}) => (
 
 const renderHeader = () => (
   <View style={styles.header}>
-    <View style={styles.headerCell}>
+    <View style={[styles.cell,{borderTopWidth:0,borderBottomWidth:0}]}>
       <Text style={styles.headerText}>Date</Text>
     </View>
-    <View style={styles.headerCell}>
+    <View style={[styles.cell,{borderTopWidth:0,borderBottomWidth:0}]}>
       <Text style={styles.headerText}> </Text>
     </View>
-    <View style={styles.headerCell}>
+    <View style={[styles.cell,{borderTopWidth:0,borderBottomWidth:0}]}>
       <Text style={styles.headerText}>Slots</Text>
     </View>
   </View>
@@ -122,7 +123,7 @@ const App = ({route}) => {
         <Arrow />
       </TouchableOpacity>
       <ScrollView
-        scrollEnabled={false}
+        scrollEnabled={true}
         contentContainerStyle={{paddingBottom: 30}}>
         <View
           style={{
@@ -174,6 +175,7 @@ const App = ({route}) => {
             <Image
               resizeMode="cover"
               source={{uri: data?.selfie}}
+              // source={require("./this.jpeg")}
               style={styles.image}
             />
           </View>
@@ -212,24 +214,24 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 0,
-    marginTop: heightPercent(3),
+    marginTop: heightPercent(isIos?1:3),
   },
   icon: {
-    height: heightPercent(14), // 95, //heightPercent(15),
-    width: heightPercent(14),
+    height: heightPercent(isIos?13:14), // 95, //heightPercent(15),
+    width: heightPercent(isIos?13:14),
     alignSelf: 'center',
   },
   titleText: {
     alignSelf: 'center',
     fontFamily: 'Montserrat-Medium',
     color: '#00008B',
-    fontSize: heightPercent(2),
+    fontSize: heightPercent(isIos?1.9: 2),
     marginTop: heightPercent(-0.8),
     marginLeft: widthPrecent(-1.3),
   },
   imageContainer: {
     marginTop: heightPercent(-3),
-    height: heightPercent(18),
+    height: heightPercent(isIos?17:18),
     width: '100%',
     alignSelf: 'center',
     borderRadius: 20,
@@ -245,15 +247,15 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   image: {
-    width: heightPercent(13),
-    height: heightPercent(13),
+    width: heightPercent(isIos?12:13),
+    height: heightPercent(isIos?12:13),
     borderRadius: heightPercent(6.5),
     alignSelf: 'center',
     // marginBottom: 20,
     marginTop: heightPercent(1),
   },
   title: {
-    fontSize: heightPercent(2.3),
+    fontSize: heightPercent(isIos?2.2:2.3),
     textAlign: 'center',
     color: 'black',
     marginBottom: 5,
@@ -261,7 +263,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   subtitle: {
-    fontSize: heightPercent(2),
+    fontSize: heightPercent(isIos?1.9:2),
     textAlign: 'center',
     marginBottom: 5,
     fontFamily: 'Montserrat-medium',
@@ -269,25 +271,27 @@ const styles = StyleSheet.create({
   },
   foodsTitle: {
     alignSelf: 'flex-start',
-    fontSize: heightPercent(2),
+    fontSize: heightPercent(isIos?1.9:2),
     marginLeft: widthPrecent(2.2),
   },
   header: {
     flexDirection: 'row',
-    borderWidth: 0.5,
+    // borderWidth: 1,
     borderColor: '#000',
+    borderTopWidth:1.2,
+    borderBottomWidth:0.5
   },
   headerCell: {
     flex: 1,
-    padding: heightPercent(1.3),
+    padding: heightPercent(isIos?1.2:1.3),
     justifyContent: 'center',
     alignItems: 'center',
-    borderRightWidth: 1,
+    borderRightWidth: 1.2,
     borderColor: '#000',
   },
   headerText: {
     fontFamily: 'Montserrat-Bold',
-    fontSize: heightPercent(2),
+    fontSize: heightPercent(isIos?1.9:2),
     color: 'black',
   },
   row: {
@@ -297,14 +301,14 @@ const styles = StyleSheet.create({
     flex: 1,
     borderWidth: 0.5,
     borderColor: '#000',
-    padding: heightPercent(1.3),
+    padding: heightPercent(isIos?1.2:1.3),
     justifyContent: 'center',
     alignItems: 'center',
   },
   cellText: {
     color: '#000000',
     fontFamily: 'Montserrat-SemiBold',
-    fontSize: heightPercent(2),
+    fontSize: heightPercent(isIos?1.9:2),
   },
   touch1: {
     height: 43,
