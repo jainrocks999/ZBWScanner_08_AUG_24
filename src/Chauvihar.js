@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import Arrow from '../src/assets/HeaderArrow.svg';
 import {useNavigation} from '@react-navigation/native';
-
+import {heightPercent, widthPrecent} from './components/responsive';
 const data = {
   userName: 'Raju',
   eventName: 'Test Event',
@@ -130,41 +130,53 @@ const App = ({route}) => {
             justifyContent: 'space-between',
             width: '95%',
             alignSelf: 'center',
-            marginTop: -2,
+            // marginTop: -2,
+            // borderWidth: 1,
+            height: heightPercent(17),
+            // borderWidth: 1,
           }}>
           <View>
             <Image
-              resizeMode="contain"
+              resizeMode="cover"
               style={styles.icon}
               source={require('./assets/jinendra/jainism2.png')}
             />
 
             {/* <Text style={styles.titleText}>जय जिनेन्द्र</Text> */}
           </View>
-
+          <View style={{width: '40%'}}>
+            <View style={styles.imageContainer}>
+              <Image
+                style={styles.mainImage}
+                resizeMode="stretch"
+                source={require('./assets/jinendra/Logo2.png')}
+              />
+            </View>
+            <Text style={styles.titleText}>|| जय जिनेन्द्र ||</Text>
+          </View>
           <View>
             <Image
               resizeMode="contain"
               style={styles.icon}
               source={require('./assets/jinendra/jainism2.png')}
             />
-            {/* <Text style={styles.titleText}>जय जिनेन्द्र</Text> */}
+            {/*  */}
           </View>
-        </View>
-        <View style={styles.imageContainer}>
-          <Image
-            style={styles.mainImage}
-            resizeMode="contain"
-            source={require('./assets/jinendra/Images.png')}
-          />
         </View>
 
         <View style={styles.container}>
-          <Image
-            resizeMethod="cover"
-            source={{uri: data?.selfie}}
-            style={styles.image}
-          />
+          <View
+            style={{
+              // borderWidth: 1,
+              width: heightPercent(13),
+              alignSelf: 'center',
+            }}>
+            <Image
+              resizeMode="cover"
+              source={{uri: data?.selfie}}
+              style={styles.image}
+            />
+          </View>
           <Text style={styles.title}>{data.eventName}</Text>
           <Text style={styles.subtitle}>User: {data?.userName}</Text>
           <Text style={styles.subtitle}>
@@ -200,45 +212,48 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 0,
-    marginTop: '5%',
+    marginTop: heightPercent(3),
   },
   icon: {
-    height: 95,
-    width: 95,
-    // marginTop: 10,
+    height: heightPercent(14), // 95, //heightPercent(15),
+    width: heightPercent(14),
     alignSelf: 'center',
   },
   titleText: {
     alignSelf: 'center',
-    fontFamily: 'Montserrat-Bold',
-    color: 'black',
-    fontSize: 10,
+    fontFamily: 'Montserrat-Medium',
+    color: '#00008B',
+    fontSize: heightPercent(2),
+    marginTop: heightPercent(-0.8),
+    marginLeft: widthPrecent(-1.3),
   },
   imageContainer: {
-    marginTop: -30,
-    height: '80%',
+    marginTop: heightPercent(-3),
+    height: heightPercent(18),
     width: '100%',
     alignSelf: 'center',
     borderRadius: 20,
     overflow: 'hidden',
-    position: 'absolute',
+    // position: 'absolute',
+    zIndex: 10,
+    top: heightPercent(1),
+    // borderWidth: 1,
   },
   mainImage: {
     alignSelf: 'center',
-    height: '20%',
+    height: '100%',
     width: '100%',
-    marginTop: 30,
   },
   image: {
-    width: 90,
-    height: 90,
-    borderRadius: 60,
+    width: heightPercent(13),
+    height: heightPercent(13),
+    borderRadius: heightPercent(6.5),
     alignSelf: 'center',
     // marginBottom: 20,
-    marginTop: 20,
+    marginTop: heightPercent(1),
   },
   title: {
-    fontSize: 18,
+    fontSize: heightPercent(2.3),
     textAlign: 'center',
     color: 'black',
     marginBottom: 5,
@@ -246,7 +261,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: heightPercent(2),
     textAlign: 'center',
     marginBottom: 5,
     fontFamily: 'Montserrat-medium',
@@ -254,8 +269,8 @@ const styles = StyleSheet.create({
   },
   foodsTitle: {
     alignSelf: 'flex-start',
-    marginTop: 0,
-    marginLeft: 10,
+    fontSize: heightPercent(2),
+    marginLeft: widthPrecent(2.2),
   },
   header: {
     flexDirection: 'row',
@@ -264,7 +279,7 @@ const styles = StyleSheet.create({
   },
   headerCell: {
     flex: 1,
-    padding: 10,
+    padding: heightPercent(1.3),
     justifyContent: 'center',
     alignItems: 'center',
     borderRightWidth: 1,
@@ -272,7 +287,7 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontFamily: 'Montserrat-Bold',
-    fontSize: 14,
+    fontSize: heightPercent(2),
     color: 'black',
   },
   row: {
@@ -282,14 +297,14 @@ const styles = StyleSheet.create({
     flex: 1,
     borderWidth: 0.5,
     borderColor: '#000',
-    padding: 10,
+    padding: heightPercent(1.3),
     justifyContent: 'center',
     alignItems: 'center',
   },
   cellText: {
     color: '#000000',
     fontFamily: 'Montserrat-SemiBold',
-    fontSize: 14,
+    fontSize: heightPercent(2),
   },
   touch1: {
     height: 43,
