@@ -54,7 +54,7 @@ const QRCodeScannerScreen = ({route}) => {
           console.log(response.data);
 
           if (response.data.code == 200)
-            navigation.replace('Chauvihar', {data: response?.data?.data});
+            navigation.navigate('Chauvihar', {data: response?.data?.data});
           else {
             Toast.show(response.data.message);
           }
