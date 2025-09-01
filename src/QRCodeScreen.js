@@ -26,6 +26,7 @@ const QRCodeScannerScreen = ({route}) => {
   const [flash, setFlash] = useState(false);
   const scannerRef = useRef(null);
   const [messege, setMessage] = useState('');
+  const [isError,setIsError]=useState(false)
   const navigation = useNavigation();
   const onRead = async e => {
     try {
@@ -125,6 +126,7 @@ const QRCodeScannerScreen = ({route}) => {
   };
 
   async function fetchVIPInfo(url) {
+    setIsError(false)
     try {
       setLoading(true);
       const response = await fetch(url, {
@@ -139,12 +141,15 @@ const QRCodeScannerScreen = ({route}) => {
       }
 
       const data = await response.json();
-      if (data?.success == true) {
-        // Alert.alert(data.message)
+      console.log(data);
+      
+      if (data.code==200) {
+       setMessage(data.message);
+      } else if(data.data==200) {
         setMessage(data.message);
-      } else {
-        Toast.show(data.message);
-        setMessage('');
+      }else{
+        setIsError(true)
+        setMessage(data.message);
       }
     } catch (error) {
       Toast.show('Someting went wrong!');
@@ -240,7 +245,7 @@ const QRCodeScannerScreen = ({route}) => {
                   fontFamily: 'Montserrat-SemiBold',
                   fontSize: 16,
                 }}>
-                Scan Next Qr Code
+                Scan Next QR Code
               </Text>
             </TouchableOpacity>
           </View>
@@ -248,9 +253,11 @@ const QRCodeScannerScreen = ({route}) => {
 
         <StatusBar backgroundColor={'#000'} />
         <ToastModal
+        isError={isError}
           visible={messege.length}
           onHide={() => {
             setMessage('');
+            setIsError(false)
           }}
           message={messege}
         />
