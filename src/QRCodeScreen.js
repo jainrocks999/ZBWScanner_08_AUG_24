@@ -26,7 +26,7 @@ const QRCodeScannerScreen = ({route}) => {
   const [flash, setFlash] = useState(false);
   const scannerRef = useRef(null);
   const [messege, setMessage] = useState('');
-  const [isError,setIsError]=useState(false)
+  const [isError, setIsError] = useState(false);
   const navigation = useNavigation();
   const onRead = async e => {
     try {
@@ -60,7 +60,7 @@ const QRCodeScannerScreen = ({route}) => {
         }
       } else if (data == 'vip') {
         if (e.data.includes('swarn-mela/vip')) {
-          setScannerActive(false);
+          // setScannerActive(false);
           fetchVIPInfo(e.data);
         } else {
           Toast.show('Wrong QR Code!');
@@ -72,6 +72,10 @@ const QRCodeScannerScreen = ({route}) => {
         } else {
           Toast.show('Wrong QR Code');
         }
+      } else if (data == 'genral') {
+        handleGenral(e.data);
+      } else {
+        Toast.show('Wrong QR code');
       }
 
       return;
@@ -121,12 +125,56 @@ const QRCodeScannerScreen = ({route}) => {
       console.log('th9s issisissiis', errr);
     }
   };
+
+  const handleGenral = async (url = '') => {
+    try {
+      console.log('url', url);
+
+      if (!url.includes('visitor/info') && !url.includes('exhibitor/info')) {
+        Toast.show('Wrong QR code');
+        return;
+      }
+      setLoading(true);
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (!response.ok) {
+        Toast.show('There are some error');
+        return;
+      }
+      const data = await response.json();
+      const user = data.data;
+      const isExhibitor = url.includes('exhibitor/info');
+      let datatoShow = {
+        isExhibitor: url.includes('exhibitor/info'),
+        profile_image: user?.profile_photo,
+        name: user?.name,
+        company_name: isExhibitor
+          ? user?.company_name
+          : user?.company_details?.businessName,
+        personal_contact_nu: isExhibitor ? user?.contact_mobile : user?.phone,
+        address: isExhibitor
+          ? user?.company_address
+          : user?.company_details?.address,
+        logo: isExhibitor ? user?.company_logo : '',
+        exhibitorion_package: isExhibitor ? user?.participation_package : '',
+      };
+      navigation.push('Details', {data: datatoShow});
+      setLoading(false);
+    } catch (err) {
+      console.log('errr', err);
+      setLoading(false);
+    }
+  };
   const handleScanButtonPress = () => {
     setScannerActive(!isScannerActive);
   };
 
   async function fetchVIPInfo(url) {
-    setIsError(false)
+    setIsError(false);
     try {
       setLoading(true);
       const response = await fetch(url, {
@@ -142,13 +190,13 @@ const QRCodeScannerScreen = ({route}) => {
 
       const data = await response.json();
       console.log(data);
-      
-      if (data.code==200) {
-       setMessage(data.message);
-      } else if(data.data==200) {
+
+      if (data.code == 200) {
         setMessage(data.message);
-      }else{
-        setIsError(true)
+      } else if (data.data == 200) {
+        setMessage(data.message);
+      } else {
+        setIsError(true);
         setMessage(data.message);
       }
     } catch (error) {
@@ -183,7 +231,13 @@ const QRCodeScannerScreen = ({route}) => {
             fontFamily: 'Montserrat-SemiBold',
             fontSize: 16,
           }}>
-          {data=='cauvihar'? 'Scan Chauvihar QR Code':data=='vip'? "Scan VIP/Guest QR":"Scan Dinner Pass QR"}
+          {data == 'cauvihar'
+            ? 'Scan Chauvihar QR Code'
+            : data == 'vip'
+            ? 'Scan VIP/Guest QR'
+            : data == 'genral'
+            ? 'Genral Scanner'
+            : 'Scan Dinner Pass QR'}
         </Text>
         <TouchableOpacity
           style={{marginRight: 40}}
@@ -253,11 +307,11 @@ const QRCodeScannerScreen = ({route}) => {
 
         <StatusBar backgroundColor={'#000'} />
         <ToastModal
-        isError={isError}
+          isError={isError}
           visible={messege.length}
           onHide={() => {
             setMessage('');
-            setIsError(false)
+            setIsError(false);
           }}
           message={messege}
         />
@@ -288,3 +342,113 @@ const styles = StyleSheet.create({
 });
 
 export default QRCodeScannerScreen;
+
+const exhibitor_Data = {
+  message: 'Exhibitor Details!',
+  data: {
+    location: {type: 'Point', coordinates: []},
+    _id: '689c7d023de601889361e0a7',
+    profile_photo:
+      'https://zbwa-bucket.in-maa-1.linodeobjects.com/new/exibitors/b26fe6ca-f1b0-4be2-acb2-60c005867044.jpeg',
+    company_logo:
+      'https://zbwa-bucket.in-maa-1.linodeobjects.com/new/exibitors/f3d4ecbf-8a8d-4f35-9e09-62c370e00cf3.jpeg',
+    name: 'Ram  test',
+    account_email: '',
+    account_company_pan: 'ABCDE1234F',
+    account_gstn_holder: 'yes',
+    account_company_gstn: '12ABCDE1234F1Z5',
+    terms: 0,
+    contact_designation: '',
+    contact_mobile: '9074094699',
+    contact_email: '',
+    company_type: 'Proprietary',
+    company_name: 'Atto',
+    company_address: '',
+    company_pincode: '',
+    company_country: '',
+    company_state: '',
+    company_city: '',
+    company_landline: '',
+    company_mobile: '1234567890',
+    company_google_map_link: '',
+    company_business_nature: [],
+    company_product_category: [],
+    company_years_in_business: '',
+    participation_package: 'ZBF - MAHARATHI',
+    zbwa_id: '',
+    specialized_in_tags: [],
+    user_id: '689c7c913de601889361e056',
+    promotional_banner:
+      'https://zbwa-bucket.in-maa-1.linodeobjects.com/new/exibitors/3eb646b9-a41f-42b0-8b64-34418b5e5772.jpeg',
+    intro_video: '',
+    product_gallery: [
+      {
+        name: 'Pr1',
+        image:
+          'https://zbwa-bucket.in-maa-1.linodeobjects.com/new/exibitors/62022bed-06ad-4471-9582-c61e370aa414.jpeg',
+      },
+    ],
+    qr_code: '',
+    about_us: '',
+    type: 'general',
+    app_store_link: '',
+    play_store_link: '',
+    status: 'active',
+    createdAt: '2025-08-13T11:54:42.476Z',
+    updatedAt: '2025-08-13T11:54:42.476Z',
+    __v: 1,
+  },
+  code: 200,
+  success: true,
+};
+
+const visitorData = {
+  message: 'Visitor Details!',
+  data: {
+    _id: '68ba8b0ac9868a101853834f',
+    name: 'Rishabh Soni',
+    designation: 'Owner',
+    employees: [
+      {
+        name: 'Niket ',
+        desgnation: 'Employee',
+        phone: '8787585858',
+        passport_photo:
+          'https://zbwa-bucket.in-maa-1.linodeobjects.com/new/visitors_dev/20a823b5-468d-4f7c-bc17-83482ea2226a.jpeg',
+        employee_recommendation_letter:
+          'https://zbwa-bucket.in-maa-1.linodeobjects.com/new/visitors_dev/c90f392d-96a9-4a0b-9751-fbfa2646fbf0.pdf',
+      },
+    ],
+    phone: '8989868686',
+    email: 'rsornaments@gmail.com',
+    company_details: {
+      businessName: 'RS ornaments',
+      address: '3/12, Maratha colony , Zaveri bazar ,kalbadevi,',
+      zipCode: '400003',
+      city: 'Mumbai',
+      state: 'Maharashtra',
+      country: 'India',
+    },
+    profile_photo:
+      'https://zbwa-bucket.in-maa-1.linodeobjects.com/new/visitors_dev/6943bfd3-0be6-426e-ba28-8371f084bb90.jpeg',
+    pan_card_image:
+      'https://zbwa-bucket.in-maa-1.linodeobjects.com/new/visitors_dev/8635210a-64b4-424d-b1a1-82167f460134.jpeg',
+    gst_certificate_image:
+      'https://zbwa-bucket.in-maa-1.linodeobjects.com/new/visitors_dev/f22e4021-e928-4347-a883-bebd7605622b.pdf',
+    recommendation_letter_image:
+      'https://zbwa-bucket.in-maa-1.linodeobjects.com/new/visitors_dev/a9f90b32-3a7e-4684-82b5-d4d88a78d3bc.jpeg',
+    interested_in_tags: [
+      '68889fea0ce5feffc7e8a3f1',
+      '689af06429482f2c3c352983',
+      '6875fa2cb4ec7809d66b405e',
+    ],
+    user_id: '68ba897fc9868a10185382ee',
+    no_of_outlets: 21,
+    status: 'active',
+    createdAt: '2025-09-05T07:02:34.691Z',
+    updatedAt: '2025-09-05T07:03:16.496Z',
+    __v: 0,
+  },
+  code: 200,
+  success: true,
+};

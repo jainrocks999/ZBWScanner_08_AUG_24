@@ -27,8 +27,6 @@ const LandingPage = () => {
     }
   };
 
-  
-
   return (
     <ImageBackground
       style={{flex: 1}}
@@ -45,7 +43,7 @@ const LandingPage = () => {
         }}></View>
       <View style={{alignItems: 'center', justifyContent: 'center', flex: 1}}>
         <TouchableOpacity
-          onPress={() => handleScan("cauvihar")}
+          onPress={() => handleScan('cauvihar')}
           style={{
             backgroundColor: '#FCDA64',
 
@@ -67,7 +65,7 @@ const LandingPage = () => {
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => handleScan("vip")}
+          onPress={() => handleScan('vip')}
           style={{
             backgroundColor: '#FCDA64',
 
@@ -78,7 +76,6 @@ const LandingPage = () => {
             marginTop: 20,
             paddingHorizontal: '3%',
             width: '67%',
-            
           }}>
           <Text
             style={{
@@ -90,7 +87,7 @@ const LandingPage = () => {
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => handleScan("dinner")}
+          onPress={() => handleScan('dinner')}
           style={{
             backgroundColor: '#FCDA64',
 
@@ -101,7 +98,6 @@ const LandingPage = () => {
             marginTop: 20,
             paddingHorizontal: '3%',
             width: '67%',
-            
           }}>
           <Text
             style={{
@@ -112,11 +108,30 @@ const LandingPage = () => {
             Scan Dinner Pass QR
           </Text>
         </TouchableOpacity>
-        
+        <TouchableOpacity
+          onPress={() => handleScan('genral')}
+          style={{
+            backgroundColor: '#FCDA64',
 
-       
+            paddingVertical: 10,
+            borderRadius: 10,
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginTop: 20,
+            paddingHorizontal: '3%',
+            width: '67%',
+          }}>
+          <Text
+            style={{
+              color: 'black',
+              fontFamily: 'Montserrat-SemiBold',
+              fontSize: 16,
+            }}>
+            Genral Scanner
+          </Text>
+        </TouchableOpacity>
       </View>
- 
+
       <StatusBar backgroundColor={'#000'} />
     </ImageBackground>
   );

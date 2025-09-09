@@ -9,4 +9,9 @@ const widthPrecent = (percent: number | string) => {
 
   return PixelRatio.roundToNearestPixel((width * elemWidth) / 100);
 };
-export {widthPrecent, heightPercent};
+const widthPercent = (percent: number | string) => {
+  const elemWidth = typeof percent === 'number' ? percent : parseFloat(percent);
+
+  return PixelRatio.roundToNearestPixel((width * elemWidth) / 100);
+};
+export {widthPrecent, heightPercent,widthPercent};
