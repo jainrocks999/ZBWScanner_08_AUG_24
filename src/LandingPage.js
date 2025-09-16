@@ -127,7 +127,7 @@ const LandingPage = () => {
               fontFamily: 'Montserrat-SemiBold',
               fontSize: 16,
             }}>
-            Genral Scanner
+            General Scanner
           </Text>
         </TouchableOpacity>
       </View>

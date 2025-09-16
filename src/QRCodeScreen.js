@@ -20,6 +20,11 @@ import Loading from './components/Loader';
 import Toast from 'react-native-simple-toast';
 import ToastModal from './ToastModel';
 const QRCodeScannerScreen = ({route}) => {
+  const data1 = {
+    app_token:
+      'Jdk46c9wGr1tRnB9QwyvBwihSkP83KbBmffb64kmv1nT0xSqpHjxzGV2p28yYetStFJYr1waGQyHn8yNuhDAJ0gN7eVa9qAbu8JX3MNYrZf0YNY65Xn83MyA',
+  };
+  const queryString = `?app_token=${encodeURIComponent(data1.app_token)}`;
   const [loading, setLoading] = useState(false);
   const data = route.params.data;
   const [isScannerActive, setScannerActive] = useState(true);
@@ -128,14 +133,15 @@ const QRCodeScannerScreen = ({route}) => {
 
   const handleGenral = async (url = '') => {
     try {
-      console.log('url', url);
-
+   
       if (!url.includes('visitor/info') && !url.includes('exhibitor/info')) {
         Toast.show('Wrong QR code');
         return;
       }
       setLoading(true);
-      const response = await fetch(url, {
+    const url1=url+queryString
+
+      const response = await fetch(url1, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -176,8 +182,9 @@ const QRCodeScannerScreen = ({route}) => {
   async function fetchVIPInfo(url) {
     setIsError(false);
     try {
+      const url1=url+queryString   
       setLoading(true);
-      const response = await fetch(url, {
+      const response = await fetch(url1, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -236,7 +243,7 @@ const QRCodeScannerScreen = ({route}) => {
             : data == 'vip'
             ? 'Scan VIP/Guest QR'
             : data == 'genral'
-            ? 'Genral Scanner'
+            ? 'General Scanner'
             : 'Scan Dinner Pass QR'}
         </Text>
         <TouchableOpacity
