@@ -8,6 +8,7 @@ import Splash from '../src/Splash';
 import Login from '../src/Login';
 import LoginWithmPin from '../src/LoginWithmPin';
 import Chauvihar from '../src/Chauvihar';
+import DinnerPassInfo from '../src/DinnerPassInfo';
 const Stack = createNativeStackNavigator();
 const Stack1 = createNativeStackNavigator();
 
@@ -36,6 +37,7 @@ export default function Home() {
         <Stack1.Screen name="QRCodeScanner" component={QRCodeScanner} />
         <Stack1.Screen name="Details" component={Details} />
         <Stack.Screen name="Chauvihar" component={Chauvihar} />
+        <Stack1.Screen name="DinnerPassInfo" component={DinnerPassInfo} />
       </Stack1.Navigator>
     </NavigationContainer>
   );

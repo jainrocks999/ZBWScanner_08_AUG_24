@@ -72,8 +72,11 @@ const QRCodeScannerScreen = ({route}) => {
         }
       } else if (data == 'dinner') {
         if (e.data.includes('/dinner/pass/')) {
-          setScannerActive(false);
-          fetchVIPInfo(e.data);
+          // setScannerActive(false);
+         const bool=await fetchVIPInfo(e.data);
+         if(bool){
+          navigation.navigate('DinnerPassInfo',{dinnerData:bool});
+         }
         } else {
           Toast.show('Wrong QR Code');
         }
@@ -83,48 +86,7 @@ const QRCodeScannerScreen = ({route}) => {
         Toast.show('Wrong QR code');
       }
 
-      return;
-      if (data) {
-        console.log('Scanned Data:', e.data);
-        navigation.replace('Details', {scannedData: e.data});
-        setScannerActive(false);
-      } else {
-        if (e.data.includes('chouvihar')) {
-          const data = {
-            app_token:
-              'Jdk46c9wGr1tRnB9QwyvBwihSkP83KbBmffb64kmv1nT0xSqpHjxzGV2p28yYetStFJYr1waGQyHn8yNuhDAJ0gN7eVa9qAbu8JX3MNYrZf0YNY65Xn83MyA',
-          };
-          setLoading(true);
-          let response = await axios({
-            method: 'post',
-
-            maxBodyLength: Infinity,
-            url: e.data,
-            data: data,
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          });
-          console.log(response.data);
-
-          if (response.data.code == 200)
-            navigation.navigate('Chauvihar', {data: response?.data?.data});
-          else {
-            Toast.show(response.data.message);
-          }
-          setLoading(false);
-        } else {
-          if (e.data.includes('swarn-mela/vip')) {
-            setScannerActive(false);
-            fetchVIPInfo(e.data);
-          } else if (e.data.includes('/dinner/pass/')) {
-            setScannerActive(false);
-            fetchVIPInfo(e.data);
-          } else {
-            Toast.show('Wrong QR Code');
-          }
-        }
-      }
+     
     } catch (errr) {
       setLoading(false);
       console.log('th9s issisissiis', errr);
@@ -133,13 +95,12 @@ const QRCodeScannerScreen = ({route}) => {
 
   const handleGenral = async (url = '') => {
     try {
-   
       if (!url.includes('visitor/info') && !url.includes('exhibitor/info')) {
         Toast.show('Wrong QR code');
         return;
       }
       setLoading(true);
-    const url1=url+queryString
+      const url1 = url + queryString;
 
       const response = await fetch(url1, {
         method: 'GET',
@@ -182,7 +143,7 @@ const QRCodeScannerScreen = ({route}) => {
   async function fetchVIPInfo(url) {
     setIsError(false);
     try {
-      const url1=url+queryString   
+      const url1 = url + queryString;
       setLoading(true);
       const response = await fetch(url1, {
         method: 'GET',
@@ -196,21 +157,23 @@ const QRCodeScannerScreen = ({route}) => {
       }
 
       const data = await response.json();
-      console.log(data);
 
       if (data.code == 200) {
         setMessage(data.message);
+        return data;
       } else if (data.data == 200) {
         setMessage(data.message);
+        return data;
       } else {
         setIsError(true);
         setMessage(data.message);
+        return false;
       }
     } catch (error) {
       Toast.show('Someting went wrong!');
       setMessage('');
       console.error('Error fetching VIP info:', error);
-      return null;
+      return false;
     } finally {
       setLoading(false);
     }
