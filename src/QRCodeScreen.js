@@ -43,7 +43,7 @@ const QRCodeScannerScreen = ({ route }) => {
       throttle(codes => {
         setActive(false);
         onRead(codes);
-      }, 5000), // 2 sec lock
+      }, 4000), // 2 sec lock
     [onRead],
   );
   const data1 = {
@@ -341,7 +341,7 @@ const QRCodeScannerScreen = ({ route }) => {
           }}
           message={messege}
         />
-        {isScannerActive ? (
+        {isScannerActive&&isActive ? (
           <View
             style={{
               height: height * 0.28,
