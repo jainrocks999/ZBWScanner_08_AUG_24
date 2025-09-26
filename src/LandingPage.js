@@ -8,7 +8,6 @@ import {
   ImageBackground,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import Storage from '../src/components/LocalStorage';
 import requestCameraPermission from '../src/Permission';
 import axios from 'axios';

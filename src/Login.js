@@ -1,6 +1,6 @@
 import React,{useState} from "react";
 import { View, Text, Image, TextInput, TouchableOpacity, ScrollView,StyleSheet,StatusBar } from "react-native";
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+// import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import ForwardArrow from "../src/assets/ForwardArrow.svg";
 import Arrow from "../src/assets/Arrow.svg";
 import Eye from "../src/assets/eye.svg"
@@ -10,7 +10,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import axios from "axios";
 import Toast from "react-native-simple-toast";
 import Loader from "../src/components/Loader";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+// import AsyncStorage from "@react-native-async-storage/async-storage";
 import Storage from "../src/components/LocalStorage";
 
 
@@ -48,9 +48,9 @@ const Login = () => {
         setLoader(false)
         console.log('this is resposs',response.data);
         Toast.show(response.data.message )
-        AsyncStorage.setItem(Storage.user_id,response.data.data._id)
-        AsyncStorage.setItem(Storage.username,response.data.data.name)
-        AsyncStorage.setItem(Storage.user_token,response.data.data.token)
+        // AsyncStorage.setItem(Storage.user_id,response.data.data._id)
+        // AsyncStorage.setItem(Storage.username,response.data.data.name)
+        // AsyncStorage.setItem(Storage.user_token,response.data.data.token)
         navigation.replace('Home')
       }
       else{
@@ -72,12 +72,12 @@ const Login = () => {
     <LinearGradient colors={['#FFFBD3', '#FFFFFF', '#FFF8BA']} style={{ flex: 1 }}>
       {loader?<Loader/>:null}
       <ScrollView contentContainerStyle={{flexGrow:1,}}>
-      <KeyboardAwareScrollView
+      {/* <KeyboardAwareScrollView
        extraScrollHeight={Platform.OS=="android"?-200:100}
        enableOnAndroid={true}
        keyboardShouldPersistTaps="handled"
        behavior={Platform.OS === "ios" ? "padding" : "height"}
-       contentContainerStyle={{ flexGrow: 1 }}>
+       contentContainerStyle={{ flexGrow: 1 }}> */}
           <View style={{}}>
           <View style={styles.main}>
             <Image style={styles.logo} source={require('../src/assets/Zbwa.png')} />
@@ -160,7 +160,7 @@ const Login = () => {
           </View>
           </View>
           <View style={{height:140}}/>
-      </KeyboardAwareScrollView>
+      {/* </KeyboardAwareScrollView> */}
       </ScrollView>
       <StatusBar
         backgroundColor={'#000'}

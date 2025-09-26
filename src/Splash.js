@@ -1,7 +1,6 @@
 import React, {useEffect} from 'react';
 import {View, Text, Image, StatusBar, StyleSheet} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import LinearGradient from 'react-native-linear-gradient';
 
 const Splash = () => {

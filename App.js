@@ -6,9 +6,10 @@ import {
   LogBox,
   Button,
   Platform,
-  SafeAreaView,
+  
   FlatList,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {Provider} from 'react-redux';
 import RootApp from './navigation';
 

@@ -1,5 +1,5 @@
-import {useNavigation} from '@react-navigation/native';
-import React, {useState, useRef} from 'react';
+import { useNavigation } from '@react-navigation/native';
+import React, { useState, useRef, useMemo } from 'react';
 import {
   View,
   Text,
@@ -11,15 +11,41 @@ import {
   ToastAndroid,
   Alert,
   ImageBackground,
+  Dimensions,
 } from 'react-native';
-import QRCodeScanner from 'react-native-qrcode-scanner';
-import {RNCamera} from 'react-native-camera';
+// import QRCodeScanner from 'react-native-qrcode-scanner';
+// import {RNCamera} from 'react-native-camera';
+import {
+  Camera,
+  useCameraDevice,
+  useCameraPermission,
+  useCodeScanner,
+} from 'react-native-vision-camera';
 import Arrow from '../src/assets/HeaderArrow.svg';
 import axios from 'axios';
 import Loading from './components/Loader';
 import Toast from 'react-native-simple-toast';
 import ToastModal from './ToastModel';
-const QRCodeScannerScreen = ({route}) => {
+import { throttle } from './throttle';
+const QRCodeScannerScreen = ({ route }) => {
+  const { height, width } = Dimensions.get('window');
+  const cameraDevice = useCameraDevice('back');
+  const codeScanner = useCodeScanner({
+    codeTypes: ['qr', 'ean-13'],
+    onCodeScanned: codes => {
+      if (codes.length > 0) {
+        throttledOnRead({ data: codes[0].value });
+      }
+    },
+  });
+  const throttledOnRead = useMemo(
+    () =>
+      throttle(codes => {
+        setActive(false);
+        onRead(codes);
+      }, 5000), // 2 sec lock
+    [onRead],
+  );
   const data1 = {
     app_token:
       'Jdk46c9wGr1tRnB9QwyvBwihSkP83KbBmffb64kmv1nT0xSqpHjxzGV2p28yYetStFJYr1waGQyHn8yNuhDAJ0gN7eVa9qAbu8JX3MNYrZf0YNY65Xn83MyA',
@@ -27,12 +53,14 @@ const QRCodeScannerScreen = ({route}) => {
   const queryString = `?app_token=${encodeURIComponent(data1.app_token)}`;
   const [loading, setLoading] = useState(false);
   const data = route.params.data;
+  const routeData = route.params.data;
   const [isScannerActive, setScannerActive] = useState(true);
   const [flash, setFlash] = useState(false);
   const scannerRef = useRef(null);
   const [messege, setMessage] = useState('');
   const [isError, setIsError] = useState(false);
   const navigation = useNavigation();
+  const [isActive, setActive] = useState(true);
   const onRead = async e => {
     try {
       if (data == 'cauvihar') {
@@ -52,15 +80,17 @@ const QRCodeScannerScreen = ({route}) => {
               'Content-Type': 'application/json',
             },
           });
-          console.log(response.data);
 
-          if (response.data.code == 200)
-            navigation.navigate('Chauvihar', {data: response?.data?.data});
-          else {
+          if (response.data.code == 200) {
+            setActive(true);
+            navigation.navigate('Chauvihar', { data: response?.data?.data });
+          } else {
+            setActive(true);
             Toast.show(response.data.message);
           }
           setLoading(false);
         } else {
+          setActive(true);
           Toast.show('Wrong QR Code!');
         }
       } else if (data == 'vip') {
@@ -69,26 +99,28 @@ const QRCodeScannerScreen = ({route}) => {
           fetchVIPInfo(e.data);
         } else {
           Toast.show('Wrong QR Code!');
+          setActive(true);
         }
       } else if (data == 'dinner') {
         if (e.data.includes('/dinner/pass/')) {
           // setScannerActive(false);
-         const bool=await fetchVIPInfo(e.data);
-         if(bool){
-          navigation.navigate('DinnerPassInfo',{dinnerData:bool});
-         }
+          const data = await fetchVIPInfo(e.data);
+          if (data) {
+            navigation.navigate('DinnerPassInfo', { dinnerData: data });
+          }
         } else {
           Toast.show('Wrong QR Code');
+          setActive(true);
         }
       } else if (data == 'genral') {
         handleGenral(e.data);
       } else {
         Toast.show('Wrong QR code');
+        setActive(true);
       }
-
-     
     } catch (errr) {
       setLoading(false);
+      setActive(true);
       console.log('th9s issisissiis', errr);
     }
   };
@@ -129,11 +161,13 @@ const QRCodeScannerScreen = ({route}) => {
         logo: isExhibitor ? user?.company_logo : '',
         exhibitorion_package: isExhibitor ? user?.participation_package : '',
       };
-      navigation.push('Details', {data: datatoShow});
+      navigation.push('Details', { data: datatoShow });
       setLoading(false);
     } catch (err) {
       console.log('errr', err);
       setLoading(false);
+    } finally {
+      setActive(true);
     }
   };
   const handleScanButtonPress = () => {
@@ -157,6 +191,7 @@ const QRCodeScannerScreen = ({route}) => {
       }
 
       const data = await response.json();
+      console.log('dinner Pass Data', data);
 
       if (data.code == 200) {
         setMessage(data.message);
@@ -176,6 +211,7 @@ const QRCodeScannerScreen = ({route}) => {
       return false;
     } finally {
       setLoading(false);
+      setActive(true);
     }
   }
 
@@ -190,7 +226,8 @@ const QRCodeScannerScreen = ({route}) => {
           marginLeft: 20,
           top: 10,
           height: 50,
-        }}>
+        }}
+      >
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Arrow />
           {/* <Image style={{width:24,height:18,tintColor:'#fff'}} source={require('../src/assets/arrow1.png')}/> */}
@@ -200,7 +237,8 @@ const QRCodeScannerScreen = ({route}) => {
             color: 'white',
             fontFamily: 'Montserrat-SemiBold',
             fontSize: 16,
-          }}>
+          }}
+        >
           {data == 'cauvihar'
             ? 'Scan Chauvihar QR Code'
             : data == 'vip'
@@ -210,10 +248,11 @@ const QRCodeScannerScreen = ({route}) => {
             : 'Scan Dinner Pass QR'}
         </Text>
         <TouchableOpacity
-          style={{marginRight: 40}}
-          onPress={() => setFlash(!flash)}>
+          style={{ marginRight: 40 }}
+          onPress={() => setFlash(!flash)}
+        >
           <Image
-            style={{width: 20, height: 20, tintColor: '#fff'}}
+            style={{ width: 20, height: 20, tintColor: '#fff' }}
             source={
               isScannerActive ? require('../src/assets/torch1.png') : null
             }
@@ -222,25 +261,38 @@ const QRCodeScannerScreen = ({route}) => {
       </View>
       <ImageBackground
         source={isScannerActive ? null : require('./assets/background.png')}
-        style={{flex: 1}}>
+        style={{ flex: 1, justifyContent: 'center' }}
+      >
         {loading && <Loading />}
 
         {isScannerActive ? (
-          <QRCodeScanner
-            onRead={onRead}
-            flashMode={
-              flash
-                ? RNCamera.Constants.FlashMode.torch
-                : RNCamera.Constants.FlashMode.off
-            }
-            showMarker={true}
-            reactivate={true}
-            reactivateTimeout={2000}
-            markerStyle={styles.marker}
-            cameraStyle={[styles.camera, {}]}
-            ref={node => (scannerRef.current = node)}
-          />
+          <>
+            {isActive ? (
+              <Camera
+                ref={scannerRef}
+                device={cameraDevice}
+                isActive={isActive}
+                style={StyleSheet.absoluteFill}
+                codeScanner={codeScanner}
+                torch={flash ? 'on' : 'off'}
+              />
+            ) : null}
+          </>
         ) : (
+          // <QRCodeScanner
+          //   onRead={onRead}
+          //   flashMode={
+          //     flash
+          //       ? RNCamera.Constants.FlashMode.torch
+          //       : RNCamera.Constants.FlashMode.off
+          //   }
+          //   showMarker={true}
+          //   reactivate={true}
+          //   reactivateTimeout={2000}
+          //   markerStyle={styles.marker}
+          //   cameraStyle={[styles.camera, {}]}
+          //   ref={node => (scannerRef.current = node)}
+          // />
           <View
             style={[
               styles.scanButtonContainer,
@@ -249,7 +301,8 @@ const QRCodeScannerScreen = ({route}) => {
                 alignItems: 'center',
                 flex: 1,
               },
-            ]}>
+            ]}
+          >
             <TouchableOpacity
               onPress={handleScanButtonPress}
               style={{
@@ -262,13 +315,15 @@ const QRCodeScannerScreen = ({route}) => {
                 marginTop: 20,
                 paddingHorizontal: '3%',
                 width: '67%',
-              }}>
+              }}
+            >
               <Text
                 style={{
                   color: 'black',
                   fontFamily: 'Montserrat-SemiBold',
                   fontSize: 16,
-                }}>
+                }}
+              >
                 Scan Next QR Code
               </Text>
             </TouchableOpacity>
@@ -285,6 +340,20 @@ const QRCodeScannerScreen = ({route}) => {
           }}
           message={messege}
         />
+        {isScannerActive ? (
+          <View
+            style={{
+              height: height * 0.28,
+              width: width * 0.6,
+              position: 'absolute',
+              zIndex: 10,
+              borderWidth: 2,
+              borderColor: 'white',
+              alignSelf: 'center',
+              borderRadius: 5,
+            }}
+          ></View>
+        ) : null}
       </ImageBackground>
     </View>
   );
@@ -316,7 +385,7 @@ export default QRCodeScannerScreen;
 const exhibitor_Data = {
   message: 'Exhibitor Details!',
   data: {
-    location: {type: 'Point', coordinates: []},
+    location: { type: 'Point', coordinates: [] },
     _id: '689c7d023de601889361e0a7',
     profile_photo:
       'https://zbwa-bucket.in-maa-1.linodeobjects.com/new/exibitors/b26fe6ca-f1b0-4be2-acb2-60c005867044.jpeg',

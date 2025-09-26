@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {createStackNavigator} from '@react-navigation/stack';
 import QRCodeScanner from '../src/QRCodeScreen';
 import LandingPage from '../src/LandingPage';
 import Details from '../src/Details';
@@ -8,9 +8,9 @@ import Splash from '../src/Splash';
 import Login from '../src/Login';
 import LoginWithmPin from '../src/LoginWithmPin';
 import Chauvihar from '../src/Chauvihar';
-import DinnerPassInfo from '../src/DinnerPassInfo';
-const Stack = createNativeStackNavigator();
-const Stack1 = createNativeStackNavigator();
+import DinnerPassInfo from '../src/DinnerPassInfo'
+const Stack = createStackNavigator();
+const Stack1 = createStackNavigator();
 
 function App() {
   return (
@@ -36,8 +36,8 @@ export default function Home() {
         <Stack1.Screen name="LandingPage" component={LandingPage} />
         <Stack1.Screen name="QRCodeScanner" component={QRCodeScanner} />
         <Stack1.Screen name="Details" component={Details} />
-        <Stack.Screen name="Chauvihar" component={Chauvihar} />
         <Stack1.Screen name="DinnerPassInfo" component={DinnerPassInfo} />
+        <Stack.Screen name="Chauvihar" component={Chauvihar} />
       </Stack1.Navigator>
     </NavigationContainer>
   );
