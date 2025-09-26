@@ -226,6 +226,7 @@ const QRCodeScannerScreen = ({ route }) => {
           marginLeft: 20,
           top: 10,
           height: 50,
+          zIndex:20
         }}
       >
         <TouchableOpacity onPress={() => navigation.goBack()}>
