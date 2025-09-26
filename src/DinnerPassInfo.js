@@ -47,7 +47,7 @@ const DinnerPassInfo = ({route}) => {
               {data?.designation ? (
                 <>
                   <Text style={styles.label}>Designation</Text>
-                  <Text style={styles.value}>{'Manager' || 'N/A'}</Text>
+                  <Text style={styles.value}>{data?.designation || 'N/A'}</Text>
                 </>
               ) : null}
 
