@@ -1,5 +1,5 @@
-import { useNavigation } from '@react-navigation/native';
-import React, { useState, useRef, useMemo } from 'react';
+import {useNavigation} from '@react-navigation/native';
+import React, {useState, useRef, useMemo} from 'react';
 import {
   View,
   Text,
@@ -26,15 +26,15 @@ import axios from 'axios';
 import Loading from './components/Loader';
 import Toast from 'react-native-simple-toast';
 import ToastModal from './ToastModel';
-import { throttle } from './throttle';
-const QRCodeScannerScreen = ({ route }) => {
-  const { height, width } = Dimensions.get('window');
+import {throttle} from './throttle';
+const QRCodeScannerScreen = ({route}) => {
+  const {height, width} = Dimensions.get('window');
   const cameraDevice = useCameraDevice('back');
   const codeScanner = useCodeScanner({
     codeTypes: ['qr', 'ean-13'],
     onCodeScanned: codes => {
       if (codes.length > 0) {
-        throttledOnRead({ data: codes[0].value });
+        throttledOnRead({data: codes[0].value});
       }
     },
   });
@@ -83,7 +83,7 @@ const QRCodeScannerScreen = ({ route }) => {
 
           if (response.data.code == 200) {
             setActive(true);
-            navigation.navigate('Chauvihar', { data: response?.data?.data });
+            navigation.navigate('Chauvihar', {data: response?.data?.data});
           } else {
             setActive(true);
             Toast.show(response.data.message);
@@ -106,7 +106,7 @@ const QRCodeScannerScreen = ({ route }) => {
           // setScannerActive(false);
           const data = await fetchVIPInfo(e.data);
           if (data) {
-            navigation.navigate('DinnerPassInfo', { dinnerData: data });
+            navigation.navigate('DinnerPassInfo', {dinnerData: data});
           }
         } else {
           Toast.show('Wrong QR Code');
@@ -161,7 +161,7 @@ const QRCodeScannerScreen = ({ route }) => {
         logo: isExhibitor ? user?.company_logo : '',
         exhibitorion_package: isExhibitor ? user?.participation_package : '',
       };
-      navigation.push('Details', { data: datatoShow });
+      navigation.push('Details', {data: datatoShow});
       setLoading(false);
     } catch (err) {
       console.log('errr', err);
@@ -214,6 +214,20 @@ const QRCodeScannerScreen = ({ route }) => {
       setActive(true);
     }
   }
+  if (!cameraDevice) {
+    return (
+      <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+        <Text
+          style={{
+            fontFamily: 'Montserrat-SemiBold',
+            fontSize: 16,
+            color: '#000',
+          }}>
+          No Camera Device Found
+        </Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -226,9 +240,8 @@ const QRCodeScannerScreen = ({ route }) => {
           marginLeft: 20,
           top: 10,
           height: 50,
-          zIndex:20
-        }}
-      >
+          zIndex: 20,
+        }}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Arrow />
           {/* <Image style={{width:24,height:18,tintColor:'#fff'}} source={require('../src/assets/arrow1.png')}/> */}
@@ -238,8 +251,7 @@ const QRCodeScannerScreen = ({ route }) => {
             color: 'white',
             fontFamily: 'Montserrat-SemiBold',
             fontSize: 16,
-          }}
-        >
+          }}>
           {data == 'cauvihar'
             ? 'Scan Chauvihar QR Code'
             : data == 'vip'
@@ -249,11 +261,10 @@ const QRCodeScannerScreen = ({ route }) => {
             : 'Scan Dinner Pass QR'}
         </Text>
         <TouchableOpacity
-          style={{ marginRight: 40 }}
-          onPress={() => setFlash(!flash)}
-        >
+          style={{marginRight: 40}}
+          onPress={() => setFlash(!flash)}>
           <Image
-            style={{ width: 20, height: 20, tintColor: '#fff' }}
+            style={{width: 20, height: 20, tintColor: '#fff'}}
             source={
               isScannerActive ? require('../src/assets/torch1.png') : null
             }
@@ -262,8 +273,7 @@ const QRCodeScannerScreen = ({ route }) => {
       </View>
       <ImageBackground
         source={isScannerActive ? null : require('./assets/background.png')}
-        style={{ flex: 1, justifyContent: 'center' }}
-      >
+        style={{flex: 1, justifyContent: 'center'}}>
         {loading && <Loading />}
 
         {isScannerActive ? (
@@ -302,8 +312,7 @@ const QRCodeScannerScreen = ({ route }) => {
                 alignItems: 'center',
                 flex: 1,
               },
-            ]}
-          >
+            ]}>
             <TouchableOpacity
               onPress={handleScanButtonPress}
               style={{
@@ -316,15 +325,13 @@ const QRCodeScannerScreen = ({ route }) => {
                 marginTop: 20,
                 paddingHorizontal: '3%',
                 width: '67%',
-              }}
-            >
+              }}>
               <Text
                 style={{
                   color: 'black',
                   fontFamily: 'Montserrat-SemiBold',
                   fontSize: 16,
-                }}
-              >
+                }}>
                 Scan Next QR Code
               </Text>
             </TouchableOpacity>
@@ -341,7 +348,7 @@ const QRCodeScannerScreen = ({ route }) => {
           }}
           message={messege}
         />
-        {isScannerActive&&isActive ? (
+        {isScannerActive && isActive ? (
           <View
             style={{
               height: height * 0.28,
@@ -352,8 +359,7 @@ const QRCodeScannerScreen = ({ route }) => {
               borderColor: 'white',
               alignSelf: 'center',
               borderRadius: 5,
-            }}
-          ></View>
+            }}></View>
         ) : null}
       </ImageBackground>
     </View>
@@ -386,7 +392,7 @@ export default QRCodeScannerScreen;
 const exhibitor_Data = {
   message: 'Exhibitor Details!',
   data: {
-    location: { type: 'Point', coordinates: [] },
+    location: {type: 'Point', coordinates: []},
     _id: '689c7d023de601889361e0a7',
     profile_photo:
       'https://zbwa-bucket.in-maa-1.linodeobjects.com/new/exibitors/b26fe6ca-f1b0-4be2-acb2-60c005867044.jpeg',
