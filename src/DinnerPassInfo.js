@@ -38,7 +38,20 @@ const DinnerPassInfo = ({route}) => {
         </View>
 
         <ScrollView contentContainerStyle={styles.scrollContainer}>
-          {/* Member Info Card */}
+          {data?.owner_exhibitor_id ? (
+            <View style={styles.profileImageContainer}>
+              <FastImage
+                resizeMode={FastImage.resizeMode.cover}
+                source={
+                  data?.owner_exhibitor_id.profile_photo
+                    ? {uri: data?.owner_exhibitor_id.profile_photo}
+                    : require('./assets/no_image.jpg')
+                }
+                style={styles.profileImage}
+              />
+            </View>
+          ) : null}
+
           <View style={styles.infoCard}>
             <View style={{marginLeft: '2%'}}>
               <Text style={[styles.label, {marginTop: 15}]}>Name</Text>
@@ -52,9 +65,13 @@ const DinnerPassInfo = ({route}) => {
               ) : null}
 
               <Text style={styles.label}>Exhibitor Name</Text>
-              <Text style={styles.value}>{data?.owner_exhibitor_id?.name || 'N/A'}</Text>
+              <Text style={styles.value}>
+                {data?.owner_exhibitor_id?.name || 'N/A'}
+              </Text>
               <Text style={styles.label}>Exhibitor Company Name</Text>
-              <Text style={styles.value}>{data?.owner_exhibitor_id?.company_name || 'N/A'}</Text>
+              <Text style={styles.value}>
+                {data?.owner_exhibitor_id?.company_name || 'N/A'}
+              </Text>
             </View>
           </View>
         </ScrollView>
