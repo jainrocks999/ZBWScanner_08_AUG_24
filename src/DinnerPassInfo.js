@@ -38,13 +38,13 @@ const DinnerPassInfo = ({route}) => {
         </View>
 
         <ScrollView contentContainerStyle={styles.scrollContainer}>
-          {data?.owner_exhibitor_id ? (
+          {data?.member_profile ? (
             <View style={styles.profileImageContainer}>
               <FastImage
                 resizeMode={FastImage.resizeMode.cover}
                 source={
-                  data?.owner_exhibitor_id.profile_photo
-                    ? {uri: data?.owner_exhibitor_id.profile_photo}
+                  data?.member_profile
+                    ? {uri: data?.member_profile}
                     : require('./assets/no_image.jpg')
                 }
                 style={styles.profileImage}
