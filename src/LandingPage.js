@@ -63,50 +63,54 @@ const LandingPage = () => {
             Scan Chauvihar Event QR
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => handleScan('vip')}
-          style={{
-            backgroundColor: '#FCDA64',
-
-            paddingVertical: 10,
-            borderRadius: 10,
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginTop: 20,
-            paddingHorizontal: '3%',
-            width: '67%',
-          }}>
-          <Text
+        {false ? (
+          <TouchableOpacity
+            onPress={() => handleScan('vip')}
             style={{
-              color: 'black',
-              fontFamily: 'Montserrat-SemiBold',
-              fontSize: 16,
-            }}>
-            Scan VIP/Guest QR
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => handleScan('dinner')}
-          style={{
-            backgroundColor: '#FCDA64',
+              backgroundColor: '#FCDA64',
 
-            paddingVertical: 10,
-            borderRadius: 10,
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginTop: 20,
-            paddingHorizontal: '3%',
-            width: '67%',
-          }}>
-          <Text
-            style={{
-              color: 'black',
-              fontFamily: 'Montserrat-SemiBold',
-              fontSize: 16,
+              paddingVertical: 10,
+              borderRadius: 10,
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginTop: 20,
+              paddingHorizontal: '3%',
+              width: '67%',
             }}>
-            Scan Dinner Pass QR
-          </Text>
-        </TouchableOpacity>
+            <Text
+              style={{
+                color: 'black',
+                fontFamily: 'Montserrat-SemiBold',
+                fontSize: 16,
+              }}>
+              Scan VIP/Guest QR
+            </Text>
+          </TouchableOpacity>
+        ) : null}
+        {false ? (
+          <TouchableOpacity
+            onPress={() => handleScan('dinner')}
+            style={{
+              backgroundColor: '#FCDA64',
+
+              paddingVertical: 10,
+              borderRadius: 10,
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginTop: 20,
+              paddingHorizontal: '3%',
+              width: '67%',
+            }}>
+            <Text
+              style={{
+                color: 'black',
+                fontFamily: 'Montserrat-SemiBold',
+                fontSize: 16,
+              }}>
+              Scan Dinner Pass QR
+            </Text>
+          </TouchableOpacity>
+        ) : null}
         <TouchableOpacity
           onPress={() => handleScan('genral')}
           style={{
@@ -127,6 +131,28 @@ const LandingPage = () => {
               fontSize: 16,
             }}>
             General Scanner
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => handleScan('admin')}
+          style={{
+            backgroundColor: '#FCDA64',
+
+            paddingVertical: 10,
+            borderRadius: 10,
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginTop: 20,
+            paddingHorizontal: '3%',
+            width: '67%',
+          }}>
+          <Text
+            style={{
+              color: 'black',
+              fontFamily: 'Montserrat-SemiBold',
+              fontSize: 16,
+            }}>
+            Admin Scanner
           </Text>
         </TouchableOpacity>
       </View>

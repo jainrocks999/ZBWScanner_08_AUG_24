@@ -50,7 +50,12 @@ const QRCodeScannerScreen = ({route}) => {
     app_token:
       'Jdk46c9wGr1tRnB9QwyvBwihSkP83KbBmffb64kmv1nT0xSqpHjxzGV2p28yYetStFJYr1waGQyHn8yNuhDAJ0gN7eVa9qAbu8JX3MNYrZf0YNY65Xn83MyA',
   };
+  const data2 = {
+    app_token:
+      'ILxiAh8QStFW5pr2ctSabn8Cb4rnc0WSBkN2ZyITZPgJpDJxCiI8D7o06f2UCfaBTTuwtcklXrMecKJmGu8JJR0rg9jTkuqMr2NU',
+  };
   const queryString = `?app_token=${encodeURIComponent(data1.app_token)}`;
+  const queryString1 = `?app_token=${encodeURIComponent(data2.app_token)}`;
   const [loading, setLoading] = useState(false);
   const data = route.params.data;
   const routeData = route.params.data;
@@ -114,7 +119,10 @@ const QRCodeScannerScreen = ({route}) => {
         }
       } else if (data == 'genral') {
         handleGenral(e.data);
-      } else {
+      }else if(data == 'admin'){
+        fetchVIPInfo(e.data,true);
+
+      }  else {
         Toast.show('Wrong QR code');
         setActive(true);
       }
@@ -174,10 +182,15 @@ const QRCodeScannerScreen = ({route}) => {
     setScannerActive(!isScannerActive);
   };
 
-  async function fetchVIPInfo(url) {
+  async function fetchVIPInfo(url,isAdmin = false) {
     setIsError(false);
     try {
-      const url1 = url + queryString;
+      let url1 = url;
+      if(isAdmin){
+        url1 = url + queryString1;
+      }else{
+        url1 = url + queryString;
+      }
       setLoading(true);
       const response = await fetch(url1, {
         method: 'GET',
@@ -205,7 +218,7 @@ const QRCodeScannerScreen = ({route}) => {
         return false;
       }
     } catch (error) {
-      Toast.show('Someting went wrong!');
+      Toast.show('Something went wrong!');
       setMessage('');
       console.error('Error fetching VIP info:', error);
       return false;
@@ -258,7 +271,7 @@ const QRCodeScannerScreen = ({route}) => {
             ? 'Scan VIP/Guest QR'
             : data == 'genral'
             ? 'General Scanner'
-            : 'Scan Dinner Pass QR'}
+            :data=='admin'?"Admin Scanner": 'Scan Dinner Pass QR'}
         </Text>
         <TouchableOpacity
           style={{marginRight: 40}}
