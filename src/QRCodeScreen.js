@@ -24,7 +24,12 @@ const QRCodeScannerScreen = ({route}) => {
     app_token:
       'Jdk46c9wGr1tRnB9QwyvBwihSkP83KbBmffb64kmv1nT0xSqpHjxzGV2p28yYetStFJYr1waGQyHn8yNuhDAJ0gN7eVa9qAbu8JX3MNYrZf0YNY65Xn83MyA',
   };
+  const data2 = {
+    app_token:
+      'ILxiAh8QStFW5pr2ctSabn8Cb4rnc0WSBkN2ZyITZPgJpDJxCiI8D7o06f2UCfaBTTuwtcklXrMecKJmGu8JJR0rg9jTkuqMr2NU',
+  };
   const queryString = `?app_token=${encodeURIComponent(data1.app_token)}`;
+  const queryString1 = `?app_token=${encodeURIComponent(data2.app_token)}`;
   const [loading, setLoading] = useState(false);
   const data = route.params.data;
   const [isScannerActive, setScannerActive] = useState(true);
@@ -73,20 +78,20 @@ const QRCodeScannerScreen = ({route}) => {
       } else if (data == 'dinner') {
         if (e.data.includes('/dinner/pass/')) {
           // setScannerActive(false);
-         const bool=await fetchVIPInfo(e.data);
-         if(bool){
-          navigation.navigate('DinnerPassInfo',{dinnerData:bool});
-         }
+          const bool = await fetchVIPInfo(e.data);
+          if (bool) {
+            navigation.navigate('DinnerPassInfo', {dinnerData: bool});
+          }
         } else {
           Toast.show('Wrong QR Code');
         }
       } else if (data == 'genral') {
         handleGenral(e.data);
+      } else if (data == 'admin') {
+        fetchVIPInfo(e.data, true);
       } else {
         Toast.show('Wrong QR code');
       }
-
-     
     } catch (errr) {
       setLoading(false);
       console.log('th9s issisissiis', errr);
@@ -140,10 +145,16 @@ const QRCodeScannerScreen = ({route}) => {
     setScannerActive(!isScannerActive);
   };
 
-  async function fetchVIPInfo(url) {
+  async function fetchVIPInfo(url,isAdmin) {
     setIsError(false);
     try {
-      const url1 = url + queryString;
+      let url1 = url
+      if(isAdmin){
+        url1 = url + queryString1
+      }else{
+        url1 = url + queryString
+      }
+      console.log('Fetching VIP info from:', url1);
       setLoading(true);
       const response = await fetch(url1, {
         method: 'GET',
@@ -170,7 +181,7 @@ const QRCodeScannerScreen = ({route}) => {
         return false;
       }
     } catch (error) {
-      Toast.show('Someting went wrong!');
+      Toast.show('Something went wrong!');
       setMessage('');
       console.error('Error fetching VIP info:', error);
       return false;
@@ -207,6 +218,8 @@ const QRCodeScannerScreen = ({route}) => {
             ? 'Scan VIP/Guest QR'
             : data == 'genral'
             ? 'General Scanner'
+            : data == 'admin'
+            ? 'Admin Scanner'
             : 'Scan Dinner Pass QR'}
         </Text>
         <TouchableOpacity
@@ -312,113 +325,3 @@ const styles = StyleSheet.create({
 });
 
 export default QRCodeScannerScreen;
-
-const exhibitor_Data = {
-  message: 'Exhibitor Details!',
-  data: {
-    location: {type: 'Point', coordinates: []},
-    _id: '689c7d023de601889361e0a7',
-    profile_photo:
-      'https://zbwa-bucket.in-maa-1.linodeobjects.com/new/exibitors/b26fe6ca-f1b0-4be2-acb2-60c005867044.jpeg',
-    company_logo:
-      'https://zbwa-bucket.in-maa-1.linodeobjects.com/new/exibitors/f3d4ecbf-8a8d-4f35-9e09-62c370e00cf3.jpeg',
-    name: 'Ram  test',
-    account_email: '',
-    account_company_pan: 'ABCDE1234F',
-    account_gstn_holder: 'yes',
-    account_company_gstn: '12ABCDE1234F1Z5',
-    terms: 0,
-    contact_designation: '',
-    contact_mobile: '9074094699',
-    contact_email: '',
-    company_type: 'Proprietary',
-    company_name: 'Atto',
-    company_address: '',
-    company_pincode: '',
-    company_country: '',
-    company_state: '',
-    company_city: '',
-    company_landline: '',
-    company_mobile: '1234567890',
-    company_google_map_link: '',
-    company_business_nature: [],
-    company_product_category: [],
-    company_years_in_business: '',
-    participation_package: 'ZBF - MAHARATHI',
-    zbwa_id: '',
-    specialized_in_tags: [],
-    user_id: '689c7c913de601889361e056',
-    promotional_banner:
-      'https://zbwa-bucket.in-maa-1.linodeobjects.com/new/exibitors/3eb646b9-a41f-42b0-8b64-34418b5e5772.jpeg',
-    intro_video: '',
-    product_gallery: [
-      {
-        name: 'Pr1',
-        image:
-          'https://zbwa-bucket.in-maa-1.linodeobjects.com/new/exibitors/62022bed-06ad-4471-9582-c61e370aa414.jpeg',
-      },
-    ],
-    qr_code: '',
-    about_us: '',
-    type: 'general',
-    app_store_link: '',
-    play_store_link: '',
-    status: 'active',
-    createdAt: '2025-08-13T11:54:42.476Z',
-    updatedAt: '2025-08-13T11:54:42.476Z',
-    __v: 1,
-  },
-  code: 200,
-  success: true,
-};
-
-const visitorData = {
-  message: 'Visitor Details!',
-  data: {
-    _id: '68ba8b0ac9868a101853834f',
-    name: 'Rishabh Soni',
-    designation: 'Owner',
-    employees: [
-      {
-        name: 'Niket ',
-        desgnation: 'Employee',
-        phone: '8787585858',
-        passport_photo:
-          'https://zbwa-bucket.in-maa-1.linodeobjects.com/new/visitors_dev/20a823b5-468d-4f7c-bc17-83482ea2226a.jpeg',
-        employee_recommendation_letter:
-          'https://zbwa-bucket.in-maa-1.linodeobjects.com/new/visitors_dev/c90f392d-96a9-4a0b-9751-fbfa2646fbf0.pdf',
-      },
-    ],
-    phone: '8989868686',
-    email: 'rsornaments@gmail.com',
-    company_details: {
-      businessName: 'RS ornaments',
-      address: '3/12, Maratha colony , Zaveri bazar ,kalbadevi,',
-      zipCode: '400003',
-      city: 'Mumbai',
-      state: 'Maharashtra',
-      country: 'India',
-    },
-    profile_photo:
-      'https://zbwa-bucket.in-maa-1.linodeobjects.com/new/visitors_dev/6943bfd3-0be6-426e-ba28-8371f084bb90.jpeg',
-    pan_card_image:
-      'https://zbwa-bucket.in-maa-1.linodeobjects.com/new/visitors_dev/8635210a-64b4-424d-b1a1-82167f460134.jpeg',
-    gst_certificate_image:
-      'https://zbwa-bucket.in-maa-1.linodeobjects.com/new/visitors_dev/f22e4021-e928-4347-a883-bebd7605622b.pdf',
-    recommendation_letter_image:
-      'https://zbwa-bucket.in-maa-1.linodeobjects.com/new/visitors_dev/a9f90b32-3a7e-4684-82b5-d4d88a78d3bc.jpeg',
-    interested_in_tags: [
-      '68889fea0ce5feffc7e8a3f1',
-      '689af06429482f2c3c352983',
-      '6875fa2cb4ec7809d66b405e',
-    ],
-    user_id: '68ba897fc9868a10185382ee',
-    no_of_outlets: 21,
-    status: 'active',
-    createdAt: '2025-09-05T07:02:34.691Z',
-    updatedAt: '2025-09-05T07:03:16.496Z',
-    __v: 0,
-  },
-  code: 200,
-  success: true,
-};
