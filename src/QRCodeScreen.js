@@ -1,5 +1,5 @@
 import {useNavigation} from '@react-navigation/native';
-import React, {useState, useRef, useMemo} from 'react';
+import React, {useCallback, useMemo, useRef, useState} from 'react';
 import {
   View,
   Text,
@@ -27,9 +27,102 @@ import Loading from './components/Loader';
 import Toast from 'react-native-simple-toast';
 import ToastModal from './ToastModel';
 import {throttle} from './throttle';
+
+const CHOUVIHAR_APP_TOKEN =
+  'Jdk46c9wGr1tRnB9QwyvBwihSkP83KbBmffb64kmv1nT0xSqpHjxzGV2p28yYetStFJYr1waGQyHn8yNuhDAJ0gN7eVa9qAbu8JX3MNYrZf0YNY65Xn83MyA';
+const CHOUVIHAR_COOKIE =
+  'serv_app_zaveri=s%3AAW8dpivDfxPttssE9tEmnsbzeCN1wazz.QTJl3ZLGggQhUJlHVwO2l9UUSB86NfDJ6UAVp7dZxmo';
+const VISITOR_APP_TOKEN =
+  'Jdk46c9wGr1tRnB9QwyvBwihSkP83KbBmffb64kmv1nT0xSqpHjxzGV2p28yYetStFJYr1waGQyHn8yNuhDAJ0gN7eVa9qAbu8JX3MNYrZf0YNY65Xn83MyA';
+const ADMIN_APP_TOKEN =
+  'ILxiAh8QStFW5pr2ctSabn8Cb4rnc0WSBkN2ZyITZPgJpDJxCiI8D7o06f2UCfaBTTuwtcklXrMecKJmGu8JJR0rg9jTkuqMr2NU';
+const queryString = `?app_token=${encodeURIComponent(VISITOR_APP_TOKEN)}`;
+const queryString1 = `?app_token=${encodeURIComponent(ADMIN_APP_TOKEN)}`;
+
 const QRCodeScannerScreen = ({route}) => {
   const {height, width} = Dimensions.get('window');
   const cameraDevice = useCameraDevice('back');
+  const [loading, setLoading] = useState(false);
+  const data = route.params.data;
+  const routeData = route.params.data;
+  const [isScannerActive, setScannerActive] = useState(true);
+  const [flash, setFlash] = useState(false);
+  const scannerRef = useRef(null);
+  const [messege, setMessage] = useState('');
+  const [isError, setIsError] = useState(false);
+  const navigation = useNavigation();
+  const [isActive, setActive] = useState(true);
+
+  const onRead = useCallback(
+    async e => {
+      try {
+        const scannedValue = String(e?.data || '').trim();
+
+        if (data === 'cauvihar') {
+
+          if (scannedValue.toLowerCase().includes('chouvihar')) {
+            console.log({scannedValue})
+            setLoading(true);
+            const response = await axios.request({
+                method: 'post',
+              url: scannedValue,
+              data: {
+                app_token: CHOUVIHAR_APP_TOKEN,
+              },
+              headers: {
+                maxBodyLength: Infinity,
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+              },
+            });
+
+            if (response.data.code == 200) {
+              setActive(true);
+              navigation.navigate('Chauvihar', {data: response?.data?.data});
+            } else {
+              setActive(true);
+              Toast.show(response.data.message);
+            }
+            setLoading(false);
+          } else {
+            setActive(true);
+            Toast.show('Wrong QR Code!');
+          }
+        } else if (data === 'vip') {
+          if (scannedValue.includes('swarn-mela/vip')) {
+            fetchVIPInfo(scannedValue);
+          } else {
+            Toast.show('Wrong QR Code!');
+            setActive(true);
+          }
+        } else if (data === 'dinner') {
+          if (scannedValue.includes('/dinner/pass/')) {
+            const vipData = await fetchVIPInfo(scannedValue);
+            if (vipData) {
+              navigation.navigate('DinnerPassInfo', {dinnerData: vipData});
+            }
+          } else {
+            Toast.show('Wrong QR Code');
+            setActive(true);
+          }
+        } else if (data === 'genral') {
+          handleGenral(scannedValue);
+        } else if (data === 'admin') {
+          fetchVIPInfo(scannedValue, true);
+        } else {
+          Toast.show('Wrong QR code');
+          setActive(true);
+        }
+      } catch (errr) {
+        setLoading(false);
+        setActive(true);
+        console.log('th9s issisissiis', errr);
+      }
+    },
+    [data, navigation],
+  );
+
   const codeScanner = useCodeScanner({
     codeTypes: ['qr', 'ean-13'],
     onCodeScanned: codes => {
@@ -46,92 +139,6 @@ const QRCodeScannerScreen = ({route}) => {
       }, 4000), // 2 sec lock
     [onRead],
   );
-  const data1 = {
-    app_token:
-      'Jdk46c9wGr1tRnB9QwyvBwihSkP83KbBmffb64kmv1nT0xSqpHjxzGV2p28yYetStFJYr1waGQyHn8yNuhDAJ0gN7eVa9qAbu8JX3MNYrZf0YNY65Xn83MyA',
-  };
-  const data2 = {
-    app_token:
-      'ILxiAh8QStFW5pr2ctSabn8Cb4rnc0WSBkN2ZyITZPgJpDJxCiI8D7o06f2UCfaBTTuwtcklXrMecKJmGu8JJR0rg9jTkuqMr2NU',
-  };
-  const queryString = `?app_token=${encodeURIComponent(data1.app_token)}`;
-  const queryString1 = `?app_token=${encodeURIComponent(data2.app_token)}`;
-  const [loading, setLoading] = useState(false);
-  const data = route.params.data;
-  const routeData = route.params.data;
-  const [isScannerActive, setScannerActive] = useState(true);
-  const [flash, setFlash] = useState(false);
-  const scannerRef = useRef(null);
-  const [messege, setMessage] = useState('');
-  const [isError, setIsError] = useState(false);
-  const navigation = useNavigation();
-  const [isActive, setActive] = useState(true);
-  const onRead = async e => {
-    try {
-      if (data == 'cauvihar') {
-        if (e.data.includes('chouvihar')) {
-          const data = {
-            app_token:
-              'Jdk46c9wGr1tRnB9QwyvBwihSkP83KbBmffb64kmv1nT0xSqpHjxzGV2p28yYetStFJYr1waGQyHn8yNuhDAJ0gN7eVa9qAbu8JX3MNYrZf0YNY65Xn83MyA',
-          };
-          setLoading(true);
-          let response = await axios({
-            method: 'post',
-
-            maxBodyLength: Infinity,
-            url: e.data,
-            data: data,
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          });
-
-          if (response.data.code == 200) {
-            setActive(true);
-            navigation.navigate('Chauvihar', {data: response?.data?.data});
-          } else {
-            setActive(true);
-            Toast.show(response.data.message);
-          }
-          setLoading(false);
-        } else {
-          setActive(true);
-          Toast.show('Wrong QR Code!');
-        }
-      } else if (data == 'vip') {
-        if (e.data.includes('swarn-mela/vip')) {
-          // setScannerActive(false);
-          fetchVIPInfo(e.data);
-        } else {
-          Toast.show('Wrong QR Code!');
-          setActive(true);
-        }
-      } else if (data == 'dinner') {
-        if (e.data.includes('/dinner/pass/')) {
-          // setScannerActive(false);
-          const data = await fetchVIPInfo(e.data);
-          if (data) {
-            navigation.navigate('DinnerPassInfo', {dinnerData: data});
-          }
-        } else {
-          Toast.show('Wrong QR Code');
-          setActive(true);
-        }
-      } else if (data == 'genral') {
-        handleGenral(e.data);
-      }else if(data == 'admin'){
-        fetchVIPInfo(e.data,true);
-
-      }  else {
-        Toast.show('Wrong QR code');
-        setActive(true);
-      }
-    } catch (errr) {
-      setLoading(false);
-      setActive(true);
-      console.log('th9s issisissiis', errr);
-    }
-  };
 
   const handleGenral = async (url = '') => {
     try {
@@ -182,13 +189,13 @@ const QRCodeScannerScreen = ({route}) => {
     setScannerActive(!isScannerActive);
   };
 
-  async function fetchVIPInfo(url,isAdmin = false) {
+  async function fetchVIPInfo(url, isAdmin = false) {
     setIsError(false);
     try {
       let url1 = url;
-      if(isAdmin){
+      if (isAdmin) {
         url1 = url + queryString1;
-      }else{
+      } else {
         url1 = url + queryString;
       }
       setLoading(true);
@@ -271,7 +278,9 @@ const QRCodeScannerScreen = ({route}) => {
             ? 'Scan VIP/Guest QR'
             : data == 'genral'
             ? 'General Scanner'
-            :data=='admin'?"Admin Scanner": 'Scan Dinner Pass QR'}
+            : data == 'admin'
+            ? 'Admin Scanner'
+            : 'Scan Dinner Pass QR'}
         </Text>
         <TouchableOpacity
           style={{marginRight: 40}}

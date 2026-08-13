@@ -111,50 +111,54 @@ const LandingPage = () => {
             </Text>
           </TouchableOpacity>
         ) : null}
-        <TouchableOpacity
-          onPress={() => handleScan('genral')}
-          style={{
-            backgroundColor: '#FCDA64',
-
-            paddingVertical: 10,
-            borderRadius: 10,
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginTop: 20,
-            paddingHorizontal: '3%',
-            width: '67%',
-          }}>
-          <Text
+        {false ? (
+          <TouchableOpacity
+            onPress={() => handleScan('genral')}
             style={{
-              color: 'black',
-              fontFamily: 'Montserrat-SemiBold',
-              fontSize: 16,
-            }}>
-            General Scanner
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => handleScan('admin')}
-          style={{
-            backgroundColor: '#FCDA64',
+              backgroundColor: '#FCDA64',
 
-            paddingVertical: 10,
-            borderRadius: 10,
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginTop: 20,
-            paddingHorizontal: '3%',
-            width: '67%',
-          }}>
-          <Text
-            style={{
-              color: 'black',
-              fontFamily: 'Montserrat-SemiBold',
-              fontSize: 16,
+              paddingVertical: 10,
+              borderRadius: 10,
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginTop: 20,
+              paddingHorizontal: '3%',
+              width: '67%',
             }}>
-            Admin Scanner
-          </Text>
-        </TouchableOpacity>
+            <Text
+              style={{
+                color: 'black',
+                fontFamily: 'Montserrat-SemiBold',
+                fontSize: 16,
+              }}>
+              General Scanner
+            </Text>
+          </TouchableOpacity>
+        ) : null}
+        {false ? (
+          <TouchableOpacity
+            onPress={() => handleScan('admin')}
+            style={{
+              backgroundColor: '#FCDA64',
+
+              paddingVertical: 10,
+              borderRadius: 10,
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginTop: 20,
+              paddingHorizontal: '3%',
+              width: '67%',
+            }}>
+            <Text
+              style={{
+                color: 'black',
+                fontFamily: 'Montserrat-SemiBold',
+                fontSize: 16,
+              }}>
+              Admin Scanner
+            </Text>
+          </TouchableOpacity>
+        ) : null}
       </View>
 
       <StatusBar backgroundColor={'#000'} />

@@ -1,0 +1,15 @@
+curl --location 'http://zbwa.webshowcase-india.com/api/chouviharevent/scan/chouvihar/event/6895dddefa435db3f8b01f28/6863c4415ab3f35a177c3ea2/0' \
+--header 'Content-Type: application/json' \
+--header 'Cookie: serv_app_zaveri=s%3AAW8dpivDfxPttssE9tEmnsbzeCN1wazz.QTJl3ZLGggQhUJlHVwO2l9UUSB86NfDJ6UAVp7dZxmo' \
+--data '{
+  "app_token":"Jdk46c9wGr1tRnB9QwyvBwihSkP83KbBmffb64kmv1nT0xSqpHjxzGV2p28yYetStFJYr1waGQyHn8yNuhDAJ0gN7eVa9qAbu8JX3MNYrZf0YNY65Xn83MyA"
+}'
+
+
+
+
+// above curl not work
+
+{
+    "scannedValue": "http://zbwa.webshowcase-india.com/api/chouviharevent/scan/chouvihar/event/6895dddefa435db3f8b01f28/6863c4415ab3f35a177c3ea2/0"
+}

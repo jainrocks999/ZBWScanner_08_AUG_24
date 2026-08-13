@@ -20,6 +20,7 @@
     "react-native-gesture-handler": "^2.28.0",
     "react-native-linear-gradient": "^2.8.3",
     "react-native-safe-area-context": "^5.6.1",
+    "react-native-screens": "4.24.0",
     "react-native-simple-toast": "^3.3.2",
     "react-native-svg": "^15.13.0",
     "react-native-svg-transformer": "^1.5.1",
