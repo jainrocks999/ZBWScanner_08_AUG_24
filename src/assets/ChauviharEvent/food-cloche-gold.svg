@@ -1,0 +1,13 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="100" cy="100" r="96" fill="#B8860B"/>
+  <g fill="none" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Dome -->
+    <path d="M55 118 A45 42 0 0 1 145 118"/>
+    <!-- Base plate -->
+    <line x1="45" y1="118" x2="155" y2="118"/>
+    <line x1="52" y1="132" x2="148" y2="132"/>
+    <!-- Handle -->
+    <line x1="100" y1="98" x2="100" y2="85"/>
+    <circle cx="100" cy="80" r="6"/>
+  </g>
+</svg>

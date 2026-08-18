@@ -25,7 +25,7 @@ const App = () => {
       <SafeAreaView
         style={{
           flex: 1,
-          backgroundColor: Platform.OS == 'ios' ? "black" : '#fff',
+          backgroundColor: Platform.OS == 'ios' ? "black" : 'black',
         }}>
           <RootApp />
         {/* <StatusBar /> */}

@@ -1,5 +1,4 @@
-import axios from 'axios';
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {
   View,
   Text,
@@ -10,26 +9,27 @@ import {
   ImageBackground,
   TouchableOpacity,
 } from 'react-native';
-import Arrow from '../src/assets/HeaderArrow.svg';
+import Arrow from './assets/HeaderArrow.svg';
 import {useNavigation} from '@react-navigation/native';
 import {heightPercent, widthPrecent} from './components/responsive';
 import isIos from './components/isIos';
-const data = {
-  userName: 'Raju',
-  eventName: 'Test Event',
-  membershipId: 'ZBW-243',
-  selfie:
-    'https://zbwa-bucket.in-maa-1.linodeobjects.com/media/placeholder_11~3e98.png',
-  foods: [
-    {e_date: '31-08-2024', selectedOption: '1', selectedTime: ''},
-    {e_date: '01-09-2024', selectedOption: '2', selectedTime: 'Evening'},
-    {e_date: '02-09-2024', selectedOption: '3', selectedTime: 'Morning'},
-    {e_date: '03-09-2024', selectedOption: '3', selectedTime: 'Both'},
-    {e_date: '04-09-2024', selectedOption: '', selectedTime: ''},
-    {e_date: '05-09-2024', selectedOption: '', selectedTime: ''},
-    {e_date: '06-09-2024', selectedOption: '', selectedTime: ''},
-  ],
-  phone: '9874563210',
+import FoodClocheGold from './assets/ChauviharEvent/food-cloche-gold.svg';
+import FoodClocheBlue from './assets/ChauviharEvent/food-cloche-blue.svg';
+
+const FLOOR1_THEME = {
+  key: 'floor1',
+  borderColor: '#C9A227',
+  backgroundColor: '#FFF5E6',
+  textColor: '#9A7B1A',
+  FoodIcon: FoodClocheGold,
+};
+
+const FLOOR2_THEME = {
+  key: 'floor2',
+  borderColor: '#1E5A8E',
+  backgroundColor: '#EFF6FF',
+  textColor: '#1E5A8E',
+  FoodIcon: FoodClocheBlue,
 };
 
 const getOptionLabel = option => {
@@ -45,11 +45,69 @@ const getOptionLabel = option => {
   }
 };
 
-const renderRow = ({item, index}) => (
+const getTheme = data => {
+  if (data?.floor2 === true) {
+    return FLOOR2_THEME;
+  }
+  if (data?.floor1 === true) {
+    return FLOOR1_THEME;
+  }
+  return FLOOR1_THEME;
+};
+
+const getMembershipLabel = data => {
+  if (data?.membershipId === '' || data?.membershipId == null) {
+    return 'Not a Member';
+  }
+  return data.membershipId;
+};
+
+const renderFoodInfo = data => {
+  const theme = getTheme(data);
+  const FoodIcon = theme.FoodIcon;
+  const isFloor2 = theme.key === 'floor2';
+  const infoPrefix = isFloor2
+    ? data?.floor2_text_arr || 'Food arrangement on 2nd floor'
+    : data?.floor1_text_arr || 'Food arrangement on 1st floor';
+  const infoSuffix = isFloor2
+    ? data?.floor2_text || 'Other Industries & Non-Primary Members / Guests'
+    : data?.floor1_text || 'Gold Industry & Primary Member';
+  const floorMatch = infoPrefix.match(/(1st floor|2nd floor)/i);
+
+  return (
+    <View
+      style={[
+        styles.infoBox,
+        {
+          borderColor: theme.borderColor,
+          backgroundColor: theme.backgroundColor,
+        },
+      ]}>
+      <FoodIcon width={heightPercent(isIos ? 5.5 : 6)} height={heightPercent(isIos ? 5.5 : 6)} />
+      <View style={styles.infoTextWrap}>
+        <Text style={[styles.infoText, {color: theme.textColor}]}>
+          {floorMatch ? (
+            <>
+              {infoPrefix.split(floorMatch[0])[0]}
+              <Text style={styles.infoTextBold}>{floorMatch[0]}</Text>
+              {infoPrefix.split(floorMatch[0])[1]}
+            </>
+          ) : (
+            infoPrefix
+          )}
+          {' for '}
+          <Text style={styles.infoTextBold}>{infoSuffix}</Text>
+        </Text>
+      </View>
+    </View>
+  );
+};
+
+const renderRow = ({item, index, foodsLength}) => (
   <View
     style={[
       styles.row,
-      {borderBottomWidth: index === data.foods.length - 1 ? 0.5 : 0},
+      {borderBottomWidth: index === foodsLength - 1 ? 0.5 : 0},
     ]}>
     <View style={styles.cell}>
       <Text style={styles.cellText}>{item.e_date}</Text>
@@ -67,84 +125,42 @@ const renderRow = ({item, index}) => (
 
 const renderHeader = () => (
   <View style={styles.header}>
-    <View style={[styles.cell, {borderTopWidth: 0, borderBottomWidth: 0}]}>
+    <View style={[styles.cell, styles.headerCell]}>
       <Text style={styles.headerText}>Date</Text>
     </View>
-    <View style={[styles.cell, {borderTopWidth: 0, borderBottomWidth: 0}]}>
+    <View style={[styles.cell, styles.headerCell]}>
       <Text style={styles.headerText}> </Text>
     </View>
-    <View style={[styles.cell, {borderTopWidth: 0, borderBottomWidth: 0}]}>
+    <View style={[styles.cell, styles.headerCell]}>
       <Text style={styles.headerText}>Slots</Text>
     </View>
   </View>
 );
 
-const App = ({route}) => {
+const Chauvihar = ({route}) => {
   const navigation = useNavigation();
-  const [, setData] = useState([]);
-  const {data} = route?.params;
-  console.log(JSON.stringify(data));
-
-  useEffect(() => {
-    getEvent();
-  }, []);
-
-  const getEvent = () => {
-    return;
-    let config = {
-      method: 'get',
-      maxBodyLength: Infinity,
-      url: url,
-      headers: {},
-    };
-
-    axios(config)
-      .then(response => {
-        console.log(JSON.stringify(response.data));
-        setData(response.data.data);
-      })
-      .catch(error => {
-        console.log(error);
-      });
-  };
+  const data = route?.params?.data || {};
+  const foods = Array.isArray(data?.foods) ? data.foods : [];
 
   return (
     <ImageBackground
       style={{flex: 1}}
       source={require('./assets/background.png')}>
       <TouchableOpacity
-        style={{
-          padding: 10,
-          position: 'absolute',
-          left: 0,
-          top: 10,
-          zIndex: 5,
-        }}
+        style={styles.backButton}
         onPress={() => navigation.goBack()}>
         <Arrow />
       </TouchableOpacity>
       <ScrollView
         scrollEnabled={true}
         contentContainerStyle={{paddingBottom: 20}}>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            width: '95%',
-            alignSelf: 'center',
-            // marginTop: -2,
-            // borderWidth: 1,
-            height: heightPercent(17),
-            // borderWidth: 1,
-          }}>
+        <View style={styles.topHeader}>
           <View>
             <Image
               resizeMode="cover"
               style={styles.icon}
               source={require('./assets/jinendra/jainism2.png')}
             />
-
-            {/* <Text style={styles.titleText}>जय जिनेन्द्र</Text> */}
           </View>
           <View style={{width: '40%'}}>
             <View style={styles.imageContainer}>
@@ -162,39 +178,36 @@ const App = ({route}) => {
               style={styles.icon}
               source={require('./assets/jinendra/jainism2.png')}
             />
-            {/*  */}
           </View>
         </View>
 
         <View style={styles.container}>
-          <View
-            style={{
-              // borderWidth: 1,
-              width: heightPercent(13),
-              alignSelf: 'center',
-            }}>
+          <View style={styles.avatarWrap}>
             <Image
               resizeMode="cover"
               source={{uri: data?.selfie}}
-              // source={require("./this.jpeg")}
               style={styles.image}
             />
           </View>
           <Text style={styles.title}>{data.eventName}</Text>
           <Text style={styles.subtitle}>User: {data?.userName}</Text>
           <Text style={styles.subtitle}>
-            Membership ID:{' '}
-            {data.membershipId === '' ? 'Not a Member' : data.membershipId}
+            Membership ID: {getMembershipLabel(data)}
           </Text>
           <Text style={styles.subtitle}>Phone: {data?.phone}</Text>
+
+          {renderFoodInfo(data)}
+
           <Text style={[styles.subtitle, styles.foodsTitle]}>Foods:</Text>
           <View>
             {renderHeader()}
             <FlatList
-              data={data.foods}
+              data={foods}
               scrollEnabled={false}
               keyExtractor={(item, index) => index.toString()}
-              renderItem={renderRow}
+              renderItem={({item, index}) =>
+                renderRow({item, index, foodsLength: foods.length})
+              }
             />
           </View>
         </View>
@@ -204,13 +217,19 @@ const App = ({route}) => {
 };
 
 const styles = StyleSheet.create({
-  headerContainer: {
+  backButton: {
+    padding: 10,
+    position: 'absolute',
+    left: 0,
+    top: 10,
+    zIndex: 5,
+  },
+  topHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: '50%',
-    marginTop: 10,
-    marginLeft: 20,
-    top: 10,
+    width: '95%',
+    alignSelf: 'center',
+    height: heightPercent(17),
   },
   container: {
     flex: 1,
@@ -218,7 +237,7 @@ const styles = StyleSheet.create({
     marginTop: heightPercent(isIos ? 1 : 3),
   },
   icon: {
-    height: heightPercent(isIos ? 13 : 14), // 95, //heightPercent(15),
+    height: heightPercent(isIos ? 13 : 14),
     width: heightPercent(isIos ? 13 : 14),
     alignSelf: 'center',
   },
@@ -237,22 +256,23 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     borderRadius: 20,
     overflow: 'hidden',
-    // position: 'absolute',
     zIndex: 10,
     top: heightPercent(1),
-    // borderWidth: 1,
   },
   mainImage: {
     alignSelf: 'center',
     height: '100%',
     width: '100%',
   },
+  avatarWrap: {
+    width: heightPercent(13),
+    alignSelf: 'center',
+  },
   image: {
     width: heightPercent(isIos ? 12 : 13),
     height: heightPercent(isIos ? 12 : 13),
     borderRadius: heightPercent(6.5),
     alignSelf: 'center',
-    // marginBottom: 20,
     marginTop: heightPercent(1),
   },
   title: {
@@ -275,20 +295,40 @@ const styles = StyleSheet.create({
     fontSize: heightPercent(isIos ? 1.9 : 2),
     marginLeft: widthPrecent(2.2),
   },
+  infoBox: {
+    width: '92%',
+    alignSelf: 'center',
+    borderWidth: 1,
+    borderRadius: 10,
+    paddingVertical: heightPercent(isIos ? 1.2 : 1.4),
+    paddingHorizontal: widthPrecent(2.5),
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: heightPercent(1.5),
+    marginBottom: heightPercent(1.5),
+  },
+  infoTextWrap: {
+    flex: 1,
+    marginLeft: widthPrecent(2),
+  },
+  infoText: {
+    fontFamily: 'Montserrat-Regular',
+    fontSize: heightPercent(isIos ? 1.7 : 1.8),
+    lineHeight: heightPercent(isIos ? 2.4 : 2.6),
+  },
+  infoTextBold: {
+    fontFamily: 'Montserrat-Bold',
+    fontSize: heightPercent(isIos ? 1.7 : 1.8),
+  },
   header: {
     flexDirection: 'row',
-    // borderWidth: 1,
     borderColor: '#000',
     borderTopWidth: 1.2,
     borderBottomWidth: 0.5,
   },
   headerCell: {
-    flex: 1,
-    padding: heightPercent(isIos ? 1.2 : 1.3),
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRightWidth: 1.2,
-    borderColor: '#000',
+    borderTopWidth: 0,
+    borderBottomWidth: 0,
   },
   headerText: {
     fontFamily: 'Montserrat-Bold',
@@ -311,21 +351,6 @@ const styles = StyleSheet.create({
     fontFamily: 'Montserrat-SemiBold',
     fontSize: heightPercent(isIos ? 1.9 : 2),
   },
-  touch1: {
-    height: 43,
-    width: 130,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#FCDA64',
-    borderRadius: 20,
-    alignSelf: 'center',
-    marginVertical: 10,
-  },
-  text: {
-    fontFamily: 'Montserrat-Medium',
-    color: '#000000',
-    fontSize: 14,
-  },
 });
 
-export default App;
+export default Chauvihar;

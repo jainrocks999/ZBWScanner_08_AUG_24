@@ -1,4 +1,4 @@
-import {useNavigation} from '@react-navigation/native';
+import {useFocusEffect, useIsFocused, useNavigation} from '@react-navigation/native';
 import React, {useCallback, useMemo, useRef, useState} from 'react';
 import {
   View,
@@ -51,7 +51,15 @@ const QRCodeScannerScreen = ({route}) => {
   const [messege, setMessage] = useState('');
   const [isError, setIsError] = useState(false);
   const navigation = useNavigation();
+  const isFocused = useIsFocused();
   const [isActive, setActive] = useState(true);
+
+  useFocusEffect(
+    useCallback(() => {
+      setActive(true);
+      setLoading(false);
+    }, []),
+  );
 
   const onRead = useCallback(
     async e => {
@@ -78,13 +86,13 @@ const QRCodeScannerScreen = ({route}) => {
             });
 
             if (response.data.code == 200) {
-              setActive(true);
+              setLoading(false);
               navigation.navigate('Chauvihar', {data: response?.data?.data});
             } else {
               setActive(true);
               Toast.show(response.data.message);
+              setLoading(false);
             }
-            setLoading(false);
           } else {
             setActive(true);
             Toast.show('Wrong QR Code!');
@@ -299,18 +307,14 @@ const QRCodeScannerScreen = ({route}) => {
         {loading && <Loading />}
 
         {isScannerActive ? (
-          <>
-            {isActive ? (
-              <Camera
-                ref={scannerRef}
-                device={cameraDevice}
-                isActive={isActive}
-                style={StyleSheet.absoluteFill}
-                codeScanner={codeScanner}
-                torch={flash ? 'on' : 'off'}
-              />
-            ) : null}
-          </>
+          <Camera
+            ref={scannerRef}
+            device={cameraDevice}
+            isActive={isFocused && isActive && !loading}
+            style={StyleSheet.absoluteFill}
+            codeScanner={codeScanner}
+            torch={flash ? 'on' : 'off'}
+          />
         ) : (
           // <QRCodeScanner
           //   onRead={onRead}
@@ -370,7 +374,7 @@ const QRCodeScannerScreen = ({route}) => {
           }}
           message={messege}
         />
-        {isScannerActive && isActive ? (
+        {isScannerActive && isFocused && isActive && !loading ? (
           <View
             style={{
               height: height * 0.28,
