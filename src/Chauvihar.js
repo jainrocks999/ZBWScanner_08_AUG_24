@@ -67,12 +67,12 @@ const renderFoodInfo = data => {
   const FoodIcon = theme.FoodIcon;
   const isFloor2 = theme.key === 'floor2';
   const infoPrefix = isFloor2
-    ? data?.floor2_text_arr || 'Food arrangement on 2nd floor'
-    : data?.floor1_text_arr || 'Food arrangement on 1st floor';
+    ? data?.floor2_text_arr || ''
+    : data?.floor1_text_arr || '';
   const infoSuffix = isFloor2
-    ? data?.floor2_text || 'Other Industries & Non-Primary Members / Guests'
-    : data?.floor1_text || 'Gold Industry & Primary Member';
-  const floorMatch = infoPrefix.match(/(1st floor|2nd floor)/i);
+    ? data?.floor2_text || ''
+    : data?.floor1_text || '';
+
 
   return (
     <View
@@ -80,23 +80,16 @@ const renderFoodInfo = data => {
         styles.infoBox,
         {
           borderColor: theme.borderColor,
-          backgroundColor: theme.backgroundColor,
         },
       ]}>
-      <FoodIcon width={heightPercent(isIos ? 5.5 : 6)} height={heightPercent(isIos ? 5.5 : 6)} />
+      <FoodIcon
+        width={heightPercent(isIos ? 5.5 : 6)}
+        height={heightPercent(isIos ? 5.5 : 6)}
+      />
       <View style={styles.infoTextWrap}>
-        <Text style={[styles.infoText, {color: theme.textColor}]}>
-          {floorMatch ? (
-            <>
-              {infoPrefix.split(floorMatch[0])[0]}
-              <Text style={styles.infoTextBold}>{floorMatch[0]}</Text>
-              {infoPrefix.split(floorMatch[0])[1]}
-            </>
-          ) : (
-            infoPrefix
-          )}
-          {' for '}
-          <Text style={styles.infoTextBold}>{infoSuffix}</Text>
+        <Text style={[styles.infoText, {color: "black"}]}>
+          <Text style={{color:theme.textColor}}>{infoSuffix+"\n"}</Text>
+          {infoPrefix}
         </Text>
       </View>
     </View>
@@ -141,6 +134,7 @@ const Chauvihar = ({route}) => {
   const navigation = useNavigation();
   const data = route?.params?.data || {};
   const foods = Array.isArray(data?.foods) ? data.foods : [];
+  console.log(data)
 
   return (
     <ImageBackground
@@ -296,23 +290,27 @@ const styles = StyleSheet.create({
     marginLeft: widthPrecent(2.2),
   },
   infoBox: {
-    width: '92%',
-    alignSelf: 'center',
-    borderWidth: 1,
-    borderRadius: 10,
-    paddingVertical: heightPercent(isIos ? 1.2 : 1.4),
-    paddingHorizontal: widthPrecent(2.5),
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: heightPercent(1.5),
-    marginBottom: heightPercent(1.5),
-  },
+  width: '92%',
+  alignSelf: 'center',
+  borderWidth: 2,
+  borderRadius: 10,
+  paddingVertical: heightPercent(isIos ? 1.2 : 1.4),
+  paddingHorizontal: widthPrecent(2.5),
+  flexDirection: 'row',
+  alignItems: 'center',
+  marginTop: heightPercent(1.5),
+  marginBottom: heightPercent(1.5),
+
+  ...(Platform.OS === 'android' && {
+    // Android specific styles
+  }),
+},
   infoTextWrap: {
     flex: 1,
     marginLeft: widthPrecent(2),
   },
   infoText: {
-    fontFamily: 'Montserrat-Regular',
+    fontFamily: 'Montserrat-Bold',
     fontSize: heightPercent(isIos ? 1.7 : 1.8),
     lineHeight: heightPercent(isIos ? 2.4 : 2.6),
   },
