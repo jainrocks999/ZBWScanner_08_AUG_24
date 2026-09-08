@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import {
   View,
   Text,
@@ -8,7 +8,9 @@ import {
   ScrollView,
   ImageBackground,
   TouchableOpacity,
+  useWindowDimensions,
 } from 'react-native';
+import RenderHTML from 'react-native-render-html';
 import Arrow from './assets/HeaderArrow.svg';
 import {useNavigation} from '@react-navigation/native';
 import {heightPercent, widthPrecent} from './components/responsive';
@@ -62,17 +64,69 @@ const getMembershipLabel = data => {
   return data.membershipId;
 };
 
-const renderFoodInfo = data => {
+const getFoodInfoHtml = data => {
+  if (data?.floor2 === true) {
+    return data?.floor2_text_concat || '';
+  }
+  if (data?.floor1 === true) {
+    return data?.floor1_text_concat || '';
+  }
+  return '';
+};
+
+const HTML_ALLOWED_STYLES = [
+  'color',
+  'fontSize',
+  'fontFamily',
+  'fontWeight',
+  'fontStyle',
+  'textAlign',
+  'lineHeight',
+  'backgroundColor',
+  'textDecorationLine',
+  'letterSpacing',
+];
+
+const SYSTEM_FONTS = [
+  'Montserrat-Regular',
+  'Montserrat-Medium',
+  'Montserrat-Bold',
+  'Montserrat-SemiBold',
+  'Montserrat-Thin',
+  'Montserrat-Black',
+];
+
+const HTML_TAGS_STYLES = {
+  body: {
+    margin: 0,
+    padding: 0,
+  },
+  p: {
+    marginTop: 0,
+    marginBottom: 0,
+    paddingTop: 0,
+    paddingBottom: 0,
+  },
+
+};
+
+const FoodInfoBox = ({data}) => {
+  const {width} = useWindowDimensions();
   const theme = getTheme(data);
   const FoodIcon = theme.FoodIcon;
-  const isFloor2 = theme.key === 'floor2';
-  const infoPrefix = isFloor2
-    ? data?.floor2_text_arr || ''
-    : data?.floor1_text_arr || '';
-  const infoSuffix = isFloor2
-    ? data?.floor2_text || ''
-    : data?.floor1_text || '';
+  const htmlContent = getFoodInfoHtml(data);
+  const iconSize = heightPercent(isIos ? 5.5 : 6);
+  const contentWidth = useMemo(
+    () => width * 0.92 - iconSize - widthPrecent(6),
+    [width, iconSize],
+  );
 
+  const htmlSource = useMemo(() => {
+    if (!htmlContent) {
+      return {html: ''};
+    }
+    return {html: htmlContent};
+  }, [htmlContent]);
 
   return (
     <View
@@ -82,15 +136,22 @@ const renderFoodInfo = data => {
           borderColor: theme.borderColor,
         },
       ]}>
-      <FoodIcon
-        width={heightPercent(isIos ? 5.5 : 6)}
-        height={heightPercent(isIos ? 5.5 : 6)}
-      />
+      <FoodIcon width={iconSize} height={iconSize} />
       <View style={styles.infoTextWrap}>
-        <Text style={[styles.infoText, {color: "black"}]}>
-          <Text style={{color:theme.textColor}}>{infoSuffix+"\n"}</Text>
-          {infoPrefix}
-        </Text>
+        {htmlContent ? (
+          <RenderHTML
+            contentWidth={contentWidth}
+            source={htmlSource}
+            systemFonts={SYSTEM_FONTS}
+            allowedStyles={HTML_ALLOWED_STYLES}
+            enableUserAgentStyles={false}
+            enableCSSInlineProcessing={true}
+            emSize={17}
+            baseStyle={styles.htmlBase}
+            tagsStyles={HTML_TAGS_STYLES}
+            defaultTextProps={{allowFontScaling: false}}
+          />
+        ) : null}
       </View>
     </View>
   );
@@ -134,7 +195,6 @@ const Chauvihar = ({route}) => {
   const navigation = useNavigation();
   const data = route?.params?.data || {};
   const foods = Array.isArray(data?.foods) ? data.foods : [];
-  console.log(data)
 
   return (
     <ImageBackground
@@ -190,7 +250,7 @@ const Chauvihar = ({route}) => {
           </Text>
           <Text style={styles.subtitle}>Phone: {data?.phone}</Text>
 
-          {renderFoodInfo(data)}
+          <FoodInfoBox data={data} />
 
           <Text style={[styles.subtitle, styles.foodsTitle]}>Foods:</Text>
           <View>
@@ -290,33 +350,24 @@ const styles = StyleSheet.create({
     marginLeft: widthPrecent(2.2),
   },
   infoBox: {
-  width: '92%',
-  alignSelf: 'center',
-  borderWidth: 2,
-  borderRadius: 10,
-  paddingVertical: heightPercent(isIos ? 1.2 : 1.4),
-  paddingHorizontal: widthPrecent(2.5),
-  flexDirection: 'row',
-  alignItems: 'center',
-  marginTop: heightPercent(1.5),
-  marginBottom: heightPercent(1.5),
-
-  ...(Platform.OS === 'android' && {
-    // Android specific styles
-  }),
-},
+    width: '92%',
+    alignSelf: 'center',
+    borderWidth: 2,
+    borderRadius: 10,
+    paddingVertical: heightPercent(isIos ? 1.2 : 1.4),
+    paddingHorizontal: widthPrecent(2.5),
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: heightPercent(1.5),
+    marginBottom: heightPercent(1.5),
+  },
   infoTextWrap: {
     flex: 1,
     marginLeft: widthPrecent(2),
   },
-  infoText: {
-    fontFamily: 'Montserrat-Bold',
-    fontSize: heightPercent(isIos ? 1.7 : 1.8),
-    lineHeight: heightPercent(isIos ? 2.4 : 2.6),
-  },
-  infoTextBold: {
-    fontFamily: 'Montserrat-Bold',
-    fontSize: heightPercent(isIos ? 1.7 : 1.8),
+  htmlBase: {
+    margin: 0,
+    padding: 0,
   },
   header: {
     flexDirection: 'row',
